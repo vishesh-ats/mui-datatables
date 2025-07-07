@@ -1,5 +1,5 @@
 {
-  "name": "@vishm/mui-datatables",
+  "name": "@vishm-ats/mui-datatables",
   "version": "4.3.0",
   "description": "Datatables for React using Material-UI",
   "main": "dist/index.js",
