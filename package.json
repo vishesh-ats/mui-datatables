@@ -1,6 +1,6 @@
 {
   "name": "@vishm-ats/mui-datatables",
-  "version": "4.3.1",
+  "version": "4.3.2",
   "description": "Datatables for React using Material-UI",
   "main": "dist/index.js",
   "files": [
@@ -99,10 +99,10 @@
   },
   "peerDependencies": {
     "@emotion/react": "^11.0.0",
-    "@mui/icons-material": "^5.11.0",
-    "@mui/material": "^5.11.0",
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+    "@mui/icons-material": ">=5.11.0 <6.0.0",
+    "@mui/material": ">=5.11.0 <6.0.0",
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
   },
   "dependencies": {
     "@babel/runtime-corejs3": "^7.12.1",
