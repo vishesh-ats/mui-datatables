@@ -1,13 +1,13 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "settings": {
     "react": {
-      "version": "latest"
+      "version": "detect"
     },
     "import/extensions": [
       ".js"
     ],
-    "import/parser": "babel-eslint",
+    "import/parser": "@babel/eslint-parser",
     "import/resolver": {
       "node": {
         "extensions": [
@@ -20,6 +20,7 @@
     }
   },
   "parserOptions": {
+    "requireConfigFile": false,
     "ecmaVersion": 6,
     "sourceType": "module",
     "allowImportExportEverywhere": true,
