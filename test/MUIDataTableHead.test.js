@@ -104,7 +104,10 @@ describe('<TableHead />', function() {
       </DndProvider>,
     );
 
-    const instance = wrapper.find('th span').at(0);
+    // console.log(wrapper.debug());
+    // Find button inside Tooltip
+    const instance = wrapper.find('button[data-testid="headcol-0"]').first();
+    // console.log('Found instance length:', instance.length);
     instance.simulate('click');
 
     assert.strictEqual(toggleSort.callCount, 1);

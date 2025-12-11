@@ -111,7 +111,7 @@ const STP = {
   ALWAYS: 'always',
 };
 
-class MUIDataTable extends React.Component {
+export class MUIDataTable extends React.Component {
   static propTypes = {
     /** Title of the table */
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
@@ -1322,7 +1322,10 @@ class MUIDataTable extends React.Component {
     );
   };
 
-  changePage = page => {
+  changePage = (event, page) => {
+    if (typeof event === 'number') {
+      page = event;
+    }
     this.setState(
       () => ({
         page: page,

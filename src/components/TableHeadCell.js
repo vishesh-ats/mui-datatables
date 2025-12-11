@@ -124,18 +124,18 @@ const TableHeadCell = ({
   };
 
   const [{ opacity }, dragRef, preview] = useDrag({
-    item: {
-      type: 'HEADER',
-      colIndex: index,
-      headCellRefs: draggableHeadCellRefs,
-    },
-    begin: monitor => {
+    type: 'HEADER',
+    item: () => {
       setTimeout(() => {
         setHintTooltipOpen(false);
         setSortTooltipOpen(false);
         setDragging(true);
       }, 0);
-      return null;
+      return {
+        type: 'HEADER',
+        colIndex: index,
+        headCellRefs: draggableHeadCellRefs,
+      };
     },
     end: (item, monitor) => {
       setDragging(false);
