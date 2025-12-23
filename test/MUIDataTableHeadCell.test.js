@@ -128,11 +128,9 @@ describe('<TableHeadCell />', function() {
       </DndProvider>,
     );
 
-    const instance = wrapper
-      .find('td')
-      .at(0)
-      .childAt(0);
-    const event = { target: { value: 'All' } };
+    // console.log(wrapper.debug());
+    const instance = wrapper.find('button[data-testid="headcol-0"]').first();
+    // console.log('Found instance length:', instance.length);
     instance.simulate('click');
     assert.strictEqual(toggleSort.callCount, 1);
   });
