@@ -1,6 +1,6 @@
 {
   "name": "@vishm-ats/mui-datatables",
-  "version": "4.3.3",
+  "version": "5.0.0",
   "description": "Datatables for React using Material-UI",
   "main": "dist/index.js",
   "files": [
