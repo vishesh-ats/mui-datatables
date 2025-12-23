@@ -1,6 +1,6 @@
 {
   "name": "@vishm-ats/mui-datatables",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Datatables for React using Material-UI",
   "main": "dist/index.js",
   "files": [
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gregnb/mui-datatables.git"
+    "url": "git+https://github.com/Atharva-System/mui-datatables.git"
   },
   "keywords": [
     "material-ui",
@@ -33,9 +33,9 @@
   "author": "gregnb <gregnb@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gregnb/mui-datatables/issues"
+    "url": "https://github.com/Atharva-System/mui-datatables/issues"
   },
-  "homepage": "https://github.com/gregnb/mui-datatables#readme",
+  "homepage": "https://github.com/Atharva-System/mui-datatables#readme",
   "devDependencies": {
     "@babel/core": "^7.24.0",
     "@babel/eslint-parser": "^7.24.0",
