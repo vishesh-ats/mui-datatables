@@ -10,7 +10,7 @@ import useColumnDrop from '../hooks/useColumnDrop.js';
 import { makeStyles } from 'tss-react/mui';
 import { useDrag } from 'react-dnd';
 
-const useStyles = makeStyles({ name: 'MUIDataTableHeadCell' })(theme => ({
+const useStyles = makeStyles({ name: 'MUIDataTableHeadCell' })((theme) => ({
   root: {},
   fixedHeader: {
     position: 'sticky',
@@ -91,7 +91,7 @@ const TableHeadCell = ({
 
   const { classes } = useStyles();
 
-  const handleKeyboardSortInput = e => {
+  const handleKeyboardSortInput = (e) => {
     if (e.key === 'Enter') {
       toggleSort(index);
     }
@@ -123,6 +123,7 @@ const TableHeadCell = ({
     ...(ariaSortDirection ? { direction: sortDirection } : {}),
   };
 
+<<<<<<< Updated upstream
   const [{ opacity }, dragRef, preview] = useDrag({
     item: {
       type: 'HEADER',
@@ -130,6 +131,11 @@ const TableHeadCell = ({
       headCellRefs: draggableHeadCellRefs,
     },
     begin: monitor => {
+=======
+  const [{ opacity: _opacity }, dragRef] = useDrag({
+    type: 'HEADER',
+    item: () => {
+>>>>>>> Stashed changes
       setTimeout(() => {
         setHintTooltipOpen(false);
         setSortTooltipOpen(false);
@@ -137,10 +143,10 @@ const TableHeadCell = ({
       }, 0);
       return null;
     },
-    end: (item, monitor) => {
+    end: (_item, _monitor) => {
       setDragging(false);
     },
-    collect: monitor => {
+    collect: (monitor) => {
       return {
         opacity: monitor.isDragging() ? 1 : 0,
       };
@@ -148,7 +154,7 @@ const TableHeadCell = ({
   });
 
   const [drop] = useColumnDrop({
-    drop: (item, mon) => {
+    drop: (_item, _mon) => {
       setSortTooltipOpen(false);
       setHintTooltipOpen(false);
       setDragging(false);
@@ -190,7 +196,7 @@ const TableHeadCell = ({
 
   return (
     <TableCell
-      ref={ref => {
+      ref={(ref) => {
         drop && drop(ref);
         setCellRef && setCellRef(index + 1, colPosition + 1, ref);
       }}
@@ -200,7 +206,8 @@ const TableHeadCell = ({
       data-colindex={index}
       data-tableid={tableId}
       onMouseDown={closeTooltip}
-      {...otherProps}>
+      {...otherProps}
+    >
       {options.sort && sort ? (
         <span className={classes.contentWrapper}>
           <Tooltip
@@ -212,21 +219,24 @@ const TableHeadCell = ({
             classes={{
               tooltip: classes.tooltip,
               popper: classes.mypopper,
-            }}>
+            }}
+          >
             <Button
               variant=""
               onKeyUp={handleKeyboardSortInput}
               onClick={handleSortClick}
               className={classes.toolButton}
               data-testid={`headcol-${index}`}
-              ref={isDraggingEnabled() ? dragRef : null}>
+              ref={isDraggingEnabled() ? dragRef : null}
+            >
               <div className={classes.sortAction}>
                 <div
                   className={clsx({
                     [classes.data]: true,
                     [classes.sortActive]: sortActive,
                     [classes.dragCursor]: isDraggingEnabled(),
-                  })}>
+                  })}
+                >
                   {children}
                 </div>
                 <div className={classes.sortAction}>
@@ -258,7 +268,8 @@ const TableHeadCell = ({
                 tooltip: classes.tooltip,
                 popper: classes.mypopper,
               }}
-              enterDelay={300}>
+              enterDelay={300}
+            >
               <HelpIcon className={classes.hintIconAlone} fontSize="small" />
             </Tooltip>
           )}

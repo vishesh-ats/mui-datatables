@@ -10,7 +10,7 @@ import HelpIcon from '@mui/icons-material/Help';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
-describe('<TableHeadCell />', function() {
+describe('<TableHeadCell />', function () {
   let classes;
 
   before(() => {
@@ -34,7 +34,8 @@ describe('<TableHeadCell />', function() {
           sortDirection={'asc'}
           sort={true}
           toggleSort={toggleSort}
-          classes={classes}>
+          classes={classes}
+        >
           some content
         </TableHeadCell>
       </DndProvider>,
@@ -122,7 +123,8 @@ describe('<TableHeadCell />', function() {
           index={0}
           sortDirection={'asc'}
           toggleSort={toggleSort}
-          classes={classes}>
+          classes={classes}
+        >
           some content
         </TableHeadCell>
       </DndProvider>,

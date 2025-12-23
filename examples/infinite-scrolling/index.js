@@ -112,7 +112,6 @@ class MessageManager extends Component {
     }
   };
 
-  /*eslint-disable */
   buildTestData(count, startingIndex) {
     const data = [
       ["Template 1", "Requester Jerry"],
@@ -137,7 +136,6 @@ class MessageManager extends Component {
     }
     return rows;
   }
-  /* eslint-enable */
 
   getMessages(pageNum) {
     const THIRTYROWS = 30;
@@ -167,7 +165,6 @@ class MessageManager extends Component {
       }
     });
 
-  // eslint-disable-next-line max-lines-per-function
   render() {
     const { classes } = this.props;
     const { filteredMessages } = this.state;

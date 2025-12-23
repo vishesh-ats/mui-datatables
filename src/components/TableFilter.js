@@ -17,7 +17,7 @@ import clsx from 'clsx';
 import { withStyles } from 'tss-react/mui';
 import cloneDeep from 'lodash.clonedeep';
 
-export const defaultFilterStyles = theme => ({
+export const defaultFilterStyles = (theme) => ({
   root: {
     backgroundColor: theme.palette.background.default,
     padding: '24px 24px 36px 24px',
@@ -162,10 +162,10 @@ class TableFilter extends React.Component {
     const { classes, filterData } = this.props;
     const { filterList } = this.state;
     const renderItem =
-      column.filterOptions && column.filterOptions.renderValue ? column.filterOptions.renderValue : v => v;
+      column.filterOptions && column.filterOptions.renderValue ? column.filterOptions.renderValue : (v) => v;
 
     return (
-      <Grid item key={index} xs={6}>
+      <Grid key={index} item xs={6}>
         <FormGroup>
           <Grid item xs={12}>
             <Typography variant="body2" className={classes.checkboxListTitle}>
@@ -174,7 +174,7 @@ class TableFilter extends React.Component {
           </Grid>
           <Grid container>
             {filterData[index].map((filterValue, filterIndex) => (
-              <Grid item key={filterIndex}>
+              <Grid key={filterIndex} item>
                 <FormControlLabel
                   key={filterIndex}
                   classes={{
@@ -206,28 +206,24 @@ class TableFilter extends React.Component {
   }
 
   renderSelect(column, index) {
-    const { classes, filterData, options } = this.props;
+    const { filterData, options } = this.props;
     const { filterList } = this.state;
     const textLabels = options.textLabels.filter;
     const renderItem =
       column.filterOptions && column.filterOptions.renderValue
         ? column.filterOptions.renderValue
-        : v => (v != null ? v.toString() : '');
+        : (v) => (v != null ? v.toString() : '');
     const width = (column.filterOptions && column.filterOptions.fullWidth) === true ? 12 : 6;
 
     return (
-      <Grid
-        item
-        key={index}
-        xs={width}
-        classes={{ 'grid-xs-12': classes.gridListTile, 'grid-xs-6': classes.gridListTile }}>
+      <Grid key={index} item xs={width}>
         <FormControl key={index} variant={'standard'} fullWidth>
           <InputLabel htmlFor={column.name}>{column.label}</InputLabel>
           <Select
             fullWidth
             value={filterList[index].length ? filterList[index].toString() : textLabels.all}
             name={column.name}
-            onChange={event => this.handleDropdownChange(event, index, column.name)}
+            onChange={(event) => this.handleDropdownChange(event, index, column.name)}
             input={<Input name={column.name} id={column.name} />}>
             <MenuItem value={textLabels.all} key={0}>
               {textLabels.all}
@@ -244,7 +240,6 @@ class TableFilter extends React.Component {
   }
 
   renderTextField(column, index) {
-    const { classes } = this.props;
     const { filterList } = this.state;
     if (column.filterOptions && column.filterOptions.renderValue) {
       console.warn('Custom renderValue not supported for textField filters');
@@ -252,11 +247,7 @@ class TableFilter extends React.Component {
     const width = (column.filterOptions && column.filterOptions.fullWidth) === true ? 12 : 6;
 
     return (
-      <Grid
-        item
-        key={index}
-        xs={width}
-        classes={{ 'grid-xs-12': classes.gridListTile, 'grid-xs-6': classes.gridListTile }}>
+      <Grid key={index} item xs={width}>
         <FormControl key={index} fullWidth>
           <TextField
             fullWidth
@@ -264,7 +255,7 @@ class TableFilter extends React.Component {
             label={column.label}
             value={filterList[index].toString() || ''}
             data-testid={'filtertextfield-' + column.name}
-            onChange={event => this.handleTextFieldChange(event, index, column.name)}
+            onChange={(event) => this.handleTextFieldChange(event, index, column.name)}
           />
         </FormControl>
       </Grid>
@@ -277,23 +268,19 @@ class TableFilter extends React.Component {
     const { classes, filterData } = this.props;
     const { filterList } = this.state;
     const renderItem =
-      column.filterOptions && column.filterOptions.renderValue ? column.filterOptions.renderValue : v => v;
+      column.filterOptions && column.filterOptions.renderValue ? column.filterOptions.renderValue : (v) => v;
     const width = (column.filterOptions && column.filterOptions.fullWidth) === true ? 12 : 6;
     return (
-      <Grid
-        item
-        key={index}
-        xs={width}
-        classes={{ 'grid-xs-12': classes.gridListTile, 'grid-xs-6': classes.gridListTile }}>
+      <Grid key={index} item xs={width}>
         <FormControl key={index} variant={'standard'} fullWidth>
           <InputLabel htmlFor={column.name}>{column.label}</InputLabel>
           <Select
             multiple
             fullWidth
             value={filterList[index] || []}
-            renderValue={selected => selected.map(renderItem).join(', ')}
+            renderValue={(selected) => selected.map(renderItem).join(', ')}
             name={column.name}
-            onChange={event => this.handleMultiselectChange(index, event.target.value, column.name)}
+            onChange={(event) => this.handleMultiselectChange(index, event.target.value, column.name)}
             input={<Input name={column.name} id={column.name} />}>
             {filterData[index].map((filterValue, filterIndex) => (
               <MenuItem value={filterValue} key={filterIndex + 1}>
@@ -318,7 +305,7 @@ class TableFilter extends React.Component {
   }
 
   renderCustomField(column, index) {
-    const { classes, filterData, options } = this.props;
+    const { filterData, options } = this.props;
     const { filterList } = this.state;
     const width = (column.filterOptions && column.filterOptions.fullWidth) === true ? 12 : 6;
     const display =
@@ -334,11 +321,7 @@ class TableFilter extends React.Component {
     }
 
     return (
-      <Grid
-        item
-        key={index}
-        xs={width}
-        classes={{ 'grid-xs-12': classes.gridListTile, 'grid-xs-6': classes.gridListTile }}>
+      <Grid key={index} item xs={width}>
         <FormControl key={index} fullWidth>
           {display(filterList, this.handleCustomChange, index, column, filterData)}
         </FormControl>
@@ -403,12 +386,12 @@ class TableFilter extends React.Component {
               return filterType === 'checkbox'
                 ? this.renderCheckbox(column, index, components)
                 : filterType === 'multiselect'
-                ? this.renderMultiselect(column, index, components)
-                : filterType === 'textField'
-                ? this.renderTextField(column, index)
-                : filterType === 'custom'
-                ? this.renderCustomField(column, index)
-                : this.renderSelect(column, index);
+                  ? this.renderMultiselect(column, index, components)
+                  : filterType === 'textField'
+                    ? this.renderTextField(column, index)
+                    : filterType === 'custom'
+                      ? this.renderCustomField(column, index)
+                      : this.renderSelect(column, index);
             }
           })}
         </Grid>

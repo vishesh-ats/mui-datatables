@@ -1,6 +1,11 @@
 import Enzyme from 'enzyme';
 import React from 'react';
+<<<<<<< Updated upstream
 import Adapter from 'enzyme-adapter-react-16';
+=======
+import Adapter from '@cfaester/enzyme-adapter-react-18';
+import { JSDOM } from 'jsdom';
+>>>>>>> Stashed changes
 
 /* required when running >= 16.0 */
 Enzyme.configure({ adapter: new Adapter() });
@@ -22,15 +27,15 @@ function setupDom() {
 
   function copyProps(src, target) {
     const props = Object.getOwnPropertyNames(src)
-      .filter(prop => typeof target[prop] === 'undefined')
-      .map(prop => Object.getOwnPropertyDescriptor(src, prop));
+      .filter((prop) => typeof target[prop] === 'undefined')
+      .map((prop) => Object.getOwnPropertyDescriptor(src, prop));
     Object.defineProperties(target, props);
   }
 
   copyProps(dom.window, global);
 
   const KEYS = ['HTMLElement'];
-  KEYS.forEach(key => {
+  KEYS.forEach((key) => {
     global[key] = window[key];
   });
 
@@ -48,7 +53,7 @@ function setupDom() {
     },
   });
 
-  global.requestAnimationFrame = callback => {
+  global.requestAnimationFrame = (callback) => {
     setTimeout(callback, 0);
   };
 
@@ -65,4 +70,4 @@ function setupDom() {
 }
 
 setupDom();
-console.error = function() {};
+console.error = function () {};

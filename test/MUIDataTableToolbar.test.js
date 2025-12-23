@@ -13,7 +13,7 @@ import TableSearch from '../src/components/TableSearch';
 import TableToolbar from '../src/components/TableToolbar';
 import getTextLabels from '../src/textLabels';
 
-describe('<TableToolbar />', function() {
+describe('<TableToolbar />', function () {
   let data;
   let columns;
   let options;
@@ -303,6 +303,7 @@ describe('<TableToolbar />', function() {
       <TableToolbar columns={columns} data={data} options={newOptions} setTableAction={setTableAction} />,
     ).dive();
 
+<<<<<<< Updated upstream
     const instance = shallowWrapper.instance();
 
     instance.setActiveIcon('filter');
@@ -311,6 +312,10 @@ describe('<TableToolbar />', function() {
 
     let actualResult = shallowWrapper.find(TableSearch);
     assert.strictEqual(actualResult.length, 1);
+=======
+    mountWrapper.find('[data-testid="Filter Table-iconButton"]').first().simulate('click');
+    assert.strictEqual(mountWrapper.find(SearchIcon).length, 1);
+>>>>>>> Stashed changes
   });
 
   it('should call onFilterDialogOpen when opening filters via toolbar', () => {

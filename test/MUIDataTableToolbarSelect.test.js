@@ -6,7 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import TableToolbarSelect from '../src/components/TableToolbarSelect';
 import getTextLabels from '../src/textLabels';
 
-describe('<TableToolbarSelect />', function() {
+describe('<TableToolbarSelect />', function () {
   before(() => {});
 
   it('should render table toolbar select', () => {
@@ -44,7 +44,7 @@ describe('<TableToolbarSelect />', function() {
     );
   });
 
-  it('should throw TypeError if selectedRows is not an array of numbers', done => {
+  it('should throw TypeError if selectedRows is not an array of numbers', (done) => {
     const onRowsDelete = () => {};
     const selectRowUpdate = () => {};
     const customToolbarSelect = (_, __, setSelectedRows) => {
@@ -60,7 +60,7 @@ describe('<TableToolbarSelect />', function() {
         //do nothing
       }
 
-      spySetSelectedRows.exceptions.forEach(error => assert.strictEqual(error instanceof TypeError, true));
+      spySetSelectedRows.exceptions.forEach((error) => assert.strictEqual(error instanceof TypeError, true));
 
       done();
     };

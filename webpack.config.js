@@ -35,9 +35,18 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
     new webpack.DefinePlugin({
+<<<<<<< Updated upstream
       'process.env': {
         NODE_ENV: JSON.stringify('development'),
       },
+=======
+      'process.env.NODE_ENV': JSON.stringify('development'),
+    }),
+    new ESLintPlugin({
+      extensions: ['js', 'jsx'],
+      failOnError: false,
+      failOnWarning: false,
+>>>>>>> Stashed changes
     }),
   ],
 };
