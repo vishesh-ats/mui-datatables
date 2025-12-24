@@ -303,14 +303,10 @@ describe('<TableFilter />', function () {
       />,
     );
 
-<<<<<<< Updated upstream
     wrapper
       .find('button[data-testid="filterReset-button"]')
       .at(0)
       .simulate('click');
-=======
-    wrapper.find('button[data-testid="filterReset-button"]').at(0).simulate('click');
->>>>>>> Stashed changes
 
     assert.equal(onFilterReset.callCount, 1);
     assert.equal(handleClose.callCount, 0);

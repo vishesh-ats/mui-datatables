@@ -29,14 +29,10 @@ describe('<TablePagination />', function () {
       <TablePagination options={options} count={100} page={1} rowsPerPage={10} changePage={changePage} />,
     );
 
-<<<<<<< Updated upstream
     wrapper
       .find('button#pagination-next')
       .at(0)
       .simulate('click');
-=======
-    wrapper.find('button#pagination-next').at(0).simulate('click');
->>>>>>> Stashed changes
     wrapper.unmount();
 
     assert.strictEqual(changePage.callCount, 1);
