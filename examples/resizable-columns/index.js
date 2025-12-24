@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import MUIDataTable from "../../src/";
 
 import FormControl from '@mui/material/FormControl';
@@ -8,7 +7,7 @@ import Switch from '@mui/material/Switch';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-function Example(props) {
+function Example(_props) {
 
   const [marginLeft, setMarginLeft] = useState(10);
   const [selectableRows, setSelectableRows] = useState("multiple");
@@ -24,7 +23,7 @@ function Example(props) {
       options: {
         sort: false,
         empty: true,
-        customBodyRender: value => <button onClick={incrCount}>+</button>
+        customBodyRender: _value => <button onClick={incrCount}>+</button>
       }
     },
     {
@@ -98,7 +97,7 @@ function Example(props) {
           control={
             <Switch
               checked={selectableRows === "multiple"}
-              onChange={(e) => setSelectableRows(event.target.checked ? "multiple" : "none")}
+              onChange={(e) => setSelectableRows(e.target.checked ? "multiple" : "none")}
               value="true"
               color="primary"
             />

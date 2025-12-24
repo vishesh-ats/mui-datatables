@@ -1,15 +1,10 @@
 import React, {useState} from "react";
-import ReactDOM from "react-dom";
 import MUIDataTable from "../../src/";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
-
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 
 function Example() {
 
@@ -19,7 +14,7 @@ function Example() {
   const [transitionTime, setTransitionTime] = useState(300);
   const [selectableRows, setSelectableRows] = useState('none');
 
-  const [treeData, setTreeData] = useState([
+  const [_treeData, _setTreeData] = useState([
         { title: 'Chicken', children: [{ title: 'Egg' }] },
         { title: 'Fish', children: [{ title: 'fingerline'}] }
       ]);

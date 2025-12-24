@@ -1,46 +1,26 @@
 import js from '@eslint/js';
-import babelParser from '@babel/eslint-parser';
+import globals from 'globals';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import importPlugin from 'eslint-plugin-import';
-import filenamesPlugin from 'eslint-plugin-filenames';
-import globals from 'globals';
 
 export default [
-  // Base ESLint recommended rules
   js.configs.recommended,
-
-  // Global configuration
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
-      parser: babelParser,
-      parserOptions: {
-        requireConfigFile: false,
-        ecmaVersion: 2020,
-        sourceType: 'module',
-        allowImportExportEverywhere: true,
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
+      ecmaVersion: 2022,
+      sourceType: 'module',
       globals: {
         ...globals.browser,
         ...globals.node,
-        ...globals.es2020,
+        ...globals.es2021,
         ...globals.mocha,
       },
-    },
-    settings: {
-      react: {
-        version: 'detect',
-      },
-      'import/extensions': ['.js'],
-      'import/parser': '@babel/eslint-parser',
-      'import/resolver': {
-        node: {
-          extensions: ['.js'],
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
         },
       },
     },
@@ -49,63 +29,66 @@ export default [
       'react-hooks': reactHooksPlugin,
       'jsx-a11y': jsxA11yPlugin,
       import: importPlugin,
-      filenames: filenamesPlugin,
+    },
+    settings: {
+      react: {
+        version: 'detect',
+      },
+      'import/extensions': ['.js', '.jsx'],
+      'import/resolver': {
+        node: {
+          extensions: ['.js', '.jsx'],
+        },
+      },
     },
     rules: {
-      // JSX a11y recommended rules
-      ...jsxA11yPlugin.flatConfigs.recommended.rules,
-
-      // Custom rules
+      // General rules
       'no-console': 'off',
-      semi: 2,
-      'no-undef': 2,
-      'no-undef-init': 2,
-      'no-tabs': 2,
+      semi: 'error',
+      'no-undef': 'error',
+      'no-undef-init': 'error',
+      'no-tabs': 'error',
       'no-unused-vars': [
-        'warn',
+        'error',
         {
-          varsIgnorePattern: '^[A-Z]|^_',
           argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
           ignoreRestSiblings: true,
         },
       ],
-      'no-irregular-whitespace': 'warn',
-      'no-useless-escape': 'warn',
-      'no-extra-boolean-cast': 'warn',
 
-      // React rules
-      'react/self-closing-comp': 2,
-      'react/no-typos': 2,
-      'react/jsx-no-duplicate-props': 'warn',
+      // React rules - jsx-uses-vars marks JSX variables as used
+      'react/jsx-uses-react': 'error',
       'react/jsx-uses-vars': 'error',
+      'react/self-closing-comp': 'error',
+      'react/no-typos': 'error',
+      'react/jsx-no-duplicate-props': 'warn',
 
       // React Hooks rules
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
 
-      // JSX a11y rules (override)
+      // Accessibility rules
       'jsx-a11y/no-autofocus': [
-        2,
+        'error',
         {
           ignoreNonDOM: true,
         },
       ],
     },
   },
-
-  // More lenient rules for examples directory
+  // Relaxed rules for examples directory
   {
     files: ['examples/**/*.{js,jsx}'],
     rules: {
-      'no-unused-vars': 'off',
-      'no-irregular-whitespace': 'off',
-      'no-useless-escape': 'off',
-      'no-extra-boolean-cast': 'off',
+      'no-unused-vars': 'warn', // Allow unused vars in examples (they're for demonstration)
+      'react-hooks/exhaustive-deps': 'off',
     },
   },
-
-  // Ignore patterns
   {
-    ignores: ['node_modules/**', 'dist/**', '.next/**', 'docs/.next/**', 'docs/export/**', 'coverage/**'],
+    ignores: ['node_modules/**', 'dist/**', 'docs/.next/**', 'coverage/**'],
   },
 ];
+

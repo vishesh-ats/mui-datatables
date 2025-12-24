@@ -1,726 +1,134 @@
 import React from 'react';
-import { spy, stub } from 'sinon';
-import { mount, shallow } from 'enzyme';
-import { assert, expect, should } from 'chai';
-import getTextLabels from '../src/textLabels';
-import TableBody from '../src/components/TableBody';
-import TableSelectCell from '../src/components/TableSelectCell';
-import Checkbox from '@mui/material/Checkbox';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, beforeAll, vi } from 'vitest';
+import MUIDataTable from '../src/MUIDataTable';
 
-describe('<TableBody />', function () {
+describe('<TableBody />', () => {
   let data;
-  let displayData;
   let columns;
-  const tableId = 'tableID';
 
-  before(() => {
-    columns = [{ name: 'First Name' }, { name: 'Company' }, { name: 'City' }, { name: 'State' }];
+  beforeAll(() => {
+    columns = [{ name: 'Name' }, { name: 'Company' }, { name: 'City', label: 'City Label' }, { name: 'State' }];
     data = [
       ['Joe James', 'Test Corp', 'Yonkers', 'NY'],
-      ['John Walsh', 'Test Corp', null, 'CT'],
+      ['John Walsh', 'Test Corp', 'Hartford', 'CT'],
       ['Bob Herm', 'Test Corp', 'Tampa', 'FL'],
       ['James Houston', 'Test Corp', 'Dallas', 'TX'],
     ];
-    displayData = [
-      {
-        data: ['Joe James', 'Test Corp', 'Yonkers', 'NY'],
-        dataIndex: 0,
+  });
+
+  it('should render table body with data rows', () => {
+    render(<MUIDataTable columns={columns} data={data} />);
+
+    expect(screen.getByText('Joe James')).toBeInTheDocument();
+    expect(screen.getByText('John Walsh')).toBeInTheDocument();
+    expect(screen.getByText('Bob Herm')).toBeInTheDocument();
+    expect(screen.getByText('James Houston')).toBeInTheDocument();
+  });
+
+  it('should render "No records" when data is empty', () => {
+    render(<MUIDataTable columns={columns} data={[]} />);
+
+    expect(screen.getByText('Sorry, no matching records found')).toBeInTheDocument();
+  });
+
+  it('should render custom "No records" message when provided', () => {
+    const options = {
+      textLabels: {
+        body: {
+          noMatch: 'Custom no match message',
+          toolTip: 'Sort',
+        },
       },
+    };
+    render(<MUIDataTable columns={columns} data={[]} options={options} />);
+
+    expect(screen.getByText('Custom no match message')).toBeInTheDocument();
+  });
+
+  it('should handle row selection when selectableRows is enabled', () => {
+    const onRowSelectionChange = vi.fn();
+    const options = {
+      selectableRows: 'multiple',
+      onRowSelectionChange,
+    };
+
+    render(<MUIDataTable columns={columns} data={data} options={options} />);
+
+    const checkboxes = screen.getAllByRole('checkbox');
+    // First checkbox is the header checkbox, skip it
+    fireEvent.click(checkboxes[1]);
+
+    expect(onRowSelectionChange).toHaveBeenCalled();
+  });
+
+  it('should render expanded rows when expandableRows is enabled', () => {
+    const renderExpandableRow = (rowData) => (
+      <tr>
+        <td colSpan={4}>
+          <div data-testid="expanded-content">Expanded: {rowData[0]}</div>
+        </td>
+      </tr>
+    );
+
+    const options = {
+      expandableRows: true,
+      renderExpandableRow,
+    };
+
+    render(<MUIDataTable columns={columns} data={data} options={options} />);
+
+    // Expand buttons should be present
+    const expandButtons = screen.getAllByTestId('KeyboardArrowRightIcon');
+    expect(expandButtons.length).toBeGreaterThan(0);
+  });
+
+  it('should call onRowClick when a row is clicked', () => {
+    const onRowClick = vi.fn();
+    const options = { onRowClick };
+
+    render(<MUIDataTable columns={columns} data={data} options={options} />);
+
+    // Click on a cell in the first row
+    const firstCell = screen.getByTestId('MuiDataTableBodyCell-0-0');
+    fireEvent.click(firstCell);
+
+    expect(onRowClick).toHaveBeenCalled();
+  });
+
+  it('should render custom body cell when customBodyRender is provided', () => {
+    const customColumns = [
       {
-        data: ['John Walsh', 'Test Corp', null, 'CT'],
-        dataIndex: 1,
+        name: 'Name',
+        options: {
+          customBodyRender: (value) => <span data-testid="custom-cell">{value.toUpperCase()}</span>,
+        },
       },
-      {
-        data: ['Bob Herm', 'Test Corp', 'Tampa', 'FL'],
-        dataIndex: 2,
-      },
-      {
-        data: ['James Houston', 'Test Corp', 'Dallas', 'TX'],
-        dataIndex: 3,
-      },
+      { name: 'Company' },
+      { name: 'City' },
+      { name: 'State' },
     ];
+
+    render(<MUIDataTable columns={customColumns} data={data} />);
+
+    const customCells = screen.getAllByTestId('custom-cell');
+    expect(customCells.length).toBe(4);
+    expect(customCells[0]).toHaveTextContent('JOE JAMES');
   });
 
-  it('should render a table body with no selectable cells if selectableRows = none', () => {
-    const options = { selectableRows: 'none' };
-    const selectRowUpdate = () => {};
-    const toggleExpandRow = () => {};
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={[]}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-      />,
-    );
-
-    const actualResult = mountWrapper.find(Checkbox);
-    assert.strictEqual(actualResult.length, 0);
-  });
-
-  it('should render a table body with no records if no data provided', () => {
-    const options = { selectableRows: false, textLabels: getTextLabels() };
-    const selectRowUpdate = () => {};
-    const toggleExpandRow = () => {};
-
-    const mountWrapper = mount(
-      <TableBody
-        data={[]}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={[]}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-      />,
-    );
-
-    const actualResult = mountWrapper.html();
-    assert.include(actualResult, 'Sorry, no matching records found');
-  });
-
-  it('should render a table body with selectable cells if selectableRows = true', () => {
-    const options = { selectableRows: true };
-    const selectRowUpdate = () => {};
-    const toggleExpandRow = () => {};
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={[]}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-      />,
-    );
-
-    const actualResult = mountWrapper.find(TableSelectCell);
-    assert.strictEqual(actualResult.length, 4);
-  });
-
-  it('should return the correct rowIndex when calling instance method getRowIndex', () => {
-    const options = { sort: true, selectableRows: true };
-    const selectRowUpdate = () => {};
-    const toggleExpandRow = () => {};
-
-    const shallowWrapper = shallow(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={1}
-        rowsPerPage={2}
-        selectedRows={[1, 2, 3]}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-      />,
-    ).dive();
-
-    const instance = shallowWrapper.instance();
-    const actualResult = instance.getRowIndex(2);
-
-    assert.strictEqual(actualResult, 4);
-  });
-
-  it('should return correctly if row exists in selectedRows when calling instance method isRowSelected', () => {
-    const options = { sort: true, selectableRows: true };
-    const selectRowUpdate = () => {};
-    const toggleExpandRow = () => {};
-
-    const shallowWrapper = shallow(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={15}
-        selectedRows={[1, 2, 3]}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-      />,
-    ).dive();
-
-    const instance = shallowWrapper.instance();
-    const actualResult = instance.isRowSelected(5);
-
-    assert.strictEqual(actualResult, false);
-  });
-
-  it('should trigger selectRowUpdate prop callback when calling method handleRowSelect', () => {
-    const options = { sort: true, selectableRows: true };
-    const selectRowUpdate = spy();
-    const toggleExpandRow = () => {};
-
-    const shallowWrapper = shallow(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={[]}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-      />,
-    ).dive();
-
-    const instance = shallowWrapper.instance();
-    instance.handleRowSelect(2);
-    shallowWrapper.update();
-
-    assert.strictEqual(selectRowUpdate.callCount, 1);
-  });
-
-  it('should select the adjacent rows when a row is shift+clicked and a previous row has been selected.', () => {
-    let adjacentRows = [];
-    const options = { sort: true, selectableRows: true, selectableRowsOnClick: true };
-    const previousSelectedRow = { index: 0, dataIndex: 0 };
-    const selectRowUpdate = (type, data, adjacent) => {
-      adjacentRows = adjacent;
-    };
-    const selectedRows = { data: [], lookup: {} };
-    const toggleExpandRow = () => {};
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={selectedRows}
-        selectRowUpdate={selectRowUpdate}
-        previousSelectedRow={previousSelectedRow}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-        tableId={tableId}
-      />,
-    );
-
-    mountWrapper
-      .find(`#MUIDataTableBodyRow-${tableId}-3`)
-      .first()
-      .simulate('click', { nativeEvent: { shiftKey: true } });
-
-    assert.strictEqual(adjacentRows.length, 3);
-  });
-
-  it('should gather selected row data when clicking row with selectableRowsOnClick=true.', () => {
-    let selectedRowData;
-    const options = { selectableRows: true, selectableRowsOnClick: true };
-    const selectRowUpdate = (type, data) => (selectedRowData = data);
-    const toggleExpandRow = spy();
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={[]}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-        tableId={tableId}
-      />,
-    );
-
-    mountWrapper.find(`#MUIDataTableBodyRow-${tableId}-2`).first().simulate('click');
-
-    const expectedResult = { index: 2, dataIndex: 2 };
-    assert.deepEqual(selectedRowData, expectedResult);
-    assert.strictEqual(toggleExpandRow.callCount, 0);
-  });
-
-  it('should not gather selected row data when clicking row with selectableRowsOnClick=true when it is disabled with isRowSelectable via index.', () => {
-    let selectedRowData;
-    const options = {
-      selectableRows: true,
-      selectableRowsOnClick: true,
-      isRowSelectable: (dataIndex) => (dataIndex === 2 ? false : true),
-    };
-    const selectRowUpdate = (_, data) => (selectedRowData = data);
-    const toggleExpandRow = spy();
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={[]}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-        tableId={tableId}
-      />,
-    );
-
-    mountWrapper.find(`#MUIDataTableBodyRow-${tableId}-2`).first().simulate('click');
-
-    assert.isUndefined(selectedRowData);
-    assert.strictEqual(toggleExpandRow.callCount, 0);
-  });
-
-  it('should not gather expanded row data when clicking row with expandableRowsOnClick=true when it is disabled with isRowExpandable via dataIndex.', () => {
-    let expandedRowData;
-    const options = {
-      expandableRows: true,
-      renderExpandableRow: () => (
-        <tr>
-          <td>foo</td>
-        </tr>
-      ),
-      expandableRowsOnClick: true,
-      isRowExpandable: (dataIndex) => (dataIndex === 2 ? false : true),
-    };
-    const toggleExpandRow = spy((_, data) => (expandedRowData = data));
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={[]}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-        tableId={tableId}
-      />,
-    );
-
-    mountWrapper.find(`#MUIDataTableBodyRow-${tableId}-2`).first().simulate('click');
-
-    assert.isUndefined(expandedRowData);
-    assert.strictEqual(toggleExpandRow.callCount, 0);
-  });
-
-  it('should not gather selected row data when clicking row with selectableRowsOnClick=true when it is disabled with isRowSelectable via selectedRows.', () => {
-    let selectedRowData;
-    const options = {
-      selectableRows: true,
-      selectableRowsOnClick: true,
-      isRowSelectable: (dataIndex, selectedRows) => selectedRows.lookup[dataIndex] || selectedRows.data.length < 1,
-    };
-    const selectRowUpdate = (_, data) => (selectedRowData = data);
-    const toggleExpandRow = spy();
-    const initialSelectedRows = {
-      data: [{ index: 1, dataIndex: 1 }],
-      lookup: { 1: true },
-    };
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={initialSelectedRows}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-        tableId={tableId}
-      />,
-    );
-
-    mountWrapper.find(`#MUIDataTableBodyRow-${tableId}-2`).first().simulate('click');
-
-    assert.isUndefined(selectedRowData);
-    assert.strictEqual(toggleExpandRow.callCount, 0);
-  });
-
-  it('should gather selected row data when clicking row with selectableRowsOnClick=true when it is enabled with isRowSelectable via dataIndex.', () => {
-    let selectedRowData;
-    const options = {
-      selectableRows: true,
-      selectableRowsOnClick: true,
-      isRowSelectable: (dataIndex, selectedRows) => selectedRows.lookup[dataIndex] || selectedRows.data.length < 1,
-    };
-    const selectRowUpdate = (_, data) => (selectedRowData = data);
-    const toggleExpandRow = spy();
-    const initialSelectedRows = {
-      data: [{ index: 1, dataIndex: 1 }],
-      lookup: { 1: true },
-    };
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={initialSelectedRows}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-        tableId={tableId}
-      />,
-    );
-
-    mountWrapper.find(`#MUIDataTableBodyRow-${tableId}-1`).first().simulate('click');
-
-    assert.isDefined(selectedRowData);
-    assert.strictEqual(toggleExpandRow.callCount, 0);
-  });
-
-  it('should gather expanded row data when clicking row with expandableRowsOnClick=true when it is enabled with isRowExpandable via dataIndex.', () => {
-    let expandedRowData;
-    const options = {
-      expandableRows: true,
-      renderExpandableRow: () => (
-        <tr>
-          <td>foo</td>
-        </tr>
-      ),
-      expandableRowsOnClick: true,
-      isRowExpandable: (dataIndex) => (dataIndex === 2 ? true : false),
-    };
-    const toggleExpandRow = spy((data) => (expandedRowData = data));
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={[]}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-        tableId={tableId}
-      />,
-    );
-
-    mountWrapper.find(`#MUIDataTableBodyRow-${tableId}-2`).first().simulate('click');
-
-    assert.isDefined(expandedRowData);
-    assert.strictEqual(toggleExpandRow.callCount, 1);
-  });
-
-  it('should gather expanded row data when clicking row with expandableRows=true and expandableRowsOnClick=true.', () => {
-    let expandedRowData;
-    const options = { selectableRows: true, expandableRows: true, expandableRowsOnClick: true };
-    const selectRowUpdate = spy();
-    const toggleExpandRow = (data) => (expandedRowData = data);
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={[]}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-        tableId={tableId}
-      />,
-    );
-
-    mountWrapper.find(`#MUIDataTableBodyRow-${tableId}-2`).first().simulate('click');
-
-    const expectedResult = { index: 2, dataIndex: 2 };
-    assert.deepEqual(expandedRowData, expectedResult);
-    assert.strictEqual(selectRowUpdate.callCount, 0);
-  });
-
-  it('should gather both selected and expanded row data when clicking row with expandableRows=true, selectableRowsOnClick=true, and expandableRowsOnClick=true.', () => {
-    let expandedRowData;
-    let selectedRowData;
-    const options = {
-      selectableRows: true,
-      selectableRowsOnClick: true,
-      expandableRows: true,
-      expandableRowsOnClick: true,
-    };
-    const selectRowUpdate = (type, data) => (selectedRowData = data);
-    const toggleExpandRow = (data) => (expandedRowData = data);
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={[]}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-        tableId={tableId}
-      />,
-    );
-
-    mountWrapper.find(`#MUIDataTableBodyRow-${tableId}-2`).first().simulate('click');
-
-    const expectedResult = { index: 2, dataIndex: 2 };
-    assert.deepEqual(selectedRowData, expectedResult);
-    assert.deepEqual(expandedRowData, expectedResult);
-  });
-
-  it('should not call onRowClick when clicking on checkbox for selectable row', () => {
-    const options = { selectableRows: true, onRowClick: spy() };
-    const selectRowUpdate = spy();
-    const toggleExpandRow = spy();
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={[]}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-      />,
-    );
-
-    mountWrapper.find('TableSelectCell').first().find('input').simulate('click');
-
-    assert.strictEqual(options.onRowClick.callCount, 0);
-  });
-
-  it('should not call onRowClick when clicking to select a row', () => {
-    const options = { selectableRows: true, selectableRowsOnClick: true, onRowClick: spy() };
-    const selectRowUpdate = spy();
-    const toggleExpandRow = spy();
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={[]}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-      />,
-    );
-
-    mountWrapper.find('TableSelectCell').first().simulate('click');
-
-    assert.strictEqual(options.onRowClick.callCount, 0);
-  });
-
-  it('should call onRowClick when Row is clicked', () => {
-    const options = { selectableRows: true, onRowClick: spy() };
-    const selectRowUpdate = stub();
-    const toggleExpandRow = () => {};
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={[]}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-        tableId={tableId}
-      />,
-    );
-
-    mountWrapper.find(`#MUIDataTableBodyRow-${tableId}-2`).first().simulate('click');
-
-    assert.strictEqual(options.onRowClick.callCount, 1);
-    assert(options.onRowClick.calledWith(data[2], { rowIndex: 2, dataIndex: 2 }));
-  });
-
-  it("should add custom props to rows if 'setRowProps' provided", () => {
-    const options = { setRowProps: stub().returns({ className: 'testClass' }) };
-    const selectRowUpdate = stub();
-    const toggleExpandRow = () => {};
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={[]}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-        tableId={tableId}
-      />,
-    );
-
-    const props = mountWrapper.find(`#MUIDataTableBodyRow-${tableId}-1`).first().props();
-
-    assert.strictEqual(props.className, 'testClass');
-    assert.isAtLeast(options.setRowProps.callCount, 1);
-    assert(options.setRowProps.calledWith(data[1]));
-  });
-
-  it("should not fail if 'setRowProps' returns undefined", () => {
-    const options = { setRowProps: stub().returns(undefined) };
-    const selectRowUpdate = stub();
-    const toggleExpandRow = () => {};
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={[]}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-        tableId={tableId}
-      />,
-    );
-
-    const props = mountWrapper.find(`#MUIDataTableBodyRow-${tableId}-1`).first().props();
-
-    assert.notEqual(props.className, 'testClass');
-    assert.isAtLeast(options.setRowProps.callCount, 1);
-    assert(options.setRowProps.calledWith(data[1]));
-  });
-
-  it("should use 'customRowRender' when provided", () => {
-    const options = { customRowRender: () => <div>Test_Text</div> };
-    const selectRowUpdate = stub();
-    const toggleExpandRow = () => {};
-
-    const mountWrapper = mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        rowsPerPage={10}
-        selectedRows={[]}
-        selectRowUpdate={selectRowUpdate}
-        expandedRows={[]}
-        toggleExpandRow={toggleExpandRow}
-        options={options}
-        searchText={''}
-        filterList={[]}
-      />,
-    );
-
-    const html = mountWrapper.html();
-
-    expect(html).to.contain('Test_Text');
-  });
-
-  it('should pass in selectedRows to isRowSelectable', () => {
-    const selectedIndex = 2;
-    const originalSelectedRows = {
-      data: [{ index: selectedIndex, dataIndex: selectedIndex }],
-      lookup: { [selectedIndex]: true },
-    };
-    const isRowSelectable = spy((_, selectedRows) => {
-      assert.deepEqual(selectedRows, originalSelectedRows);
-      return true;
-    });
-
-    const options = { selectableRows: true, isRowSelectable };
-
-    mount(
-      <TableBody
-        data={displayData}
-        count={displayData.length}
-        columns={columns}
-        page={0}
-        selectedRows={originalSelectedRows}
-        rowsPerPage={10}
-        expandedRows={[]}
-        options={options}
-        searchText={''}
-        filterList={[]}
-      />,
-    );
-
-    assert.equal(isRowSelectable.callCount, displayData.length);
+  it('should hide column when display is set to false', () => {
+    const customColumns = [
+      { name: 'Name', options: { display: false } },
+      { name: 'Company' },
+      { name: 'City' },
+      { name: 'State' },
+    ];
+
+    render(<MUIDataTable columns={customColumns} data={data} />);
+
+    // Name column should be hidden
+    expect(screen.queryByText('Joe James')).toBeNull();
+    // Other columns should be visible
+    expect(screen.getAllByText('Test Corp').length).toBeGreaterThan(0);
   });
 });

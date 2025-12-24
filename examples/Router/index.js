@@ -33,7 +33,7 @@ function Examples({ classes }) {
       <main className={classes.root}>
         <div className={classes.contentWrapper}>
           <Routes>
-            <Route path="/" element={<ExamplesGrid examples={examples} />} />
+            <Route path="/" element={<ExamplesGrid />} />
             {Object.keys(examples).map((label, index) => {
               const Component = examples[label];
               return (
@@ -60,7 +60,7 @@ const StyledExamples = withStyles(Examples, styles);
 
 function App() {
   return (
-    <Router hashType="noslash">
+    <Router>
       <StyledExamples />
     </Router>
   );

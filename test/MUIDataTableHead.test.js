@@ -1,19 +1,16 @@
 import React from 'react';
-import { spy, stub } from 'sinon';
-import { mount, shallow } from 'enzyme';
-import { assert, expect, should } from 'chai';
+import { render, screen, fireEvent, within } from '@testing-library/react';
+import { describe, it, expect, beforeAll, vi } from 'vitest';
 import TableHead from '../src/components/TableHead';
 import TableHeadCell from '../src/components/TableHeadCell';
-import Checkbox from '@mui/material/Checkbox';
-import Tooltip from '@mui/material/Tooltip';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
-describe('<TableHead />', function () {
+describe('<TableHead />', () => {
   let columns;
   let handleHeadUpdateRef;
 
-  before(() => {
+  beforeAll(() => {
     columns = [
       { name: 'First Name', label: 'First Name', display: 'true', sort: true },
       { name: 'Company', label: 'Company', display: 'true', sort: null },
@@ -28,164 +25,179 @@ describe('<TableHead />', function () {
       },
     ];
 
-    handleHeadUpdateRef = () => {};
+    handleHeadUpdateRef = vi.fn();
   });
 
   it('should render a table head', () => {
     const options = {};
-    const toggleSort = () => {};
-    const mountWrapper = mount(
+    const toggleSort = vi.fn();
+    render(
       <DndProvider backend={HTML5Backend}>
-        <TableHead
-          columns={columns}
-          options={options}
-          setCellRef={() => {}}
-          handleHeadUpdateRef={handleHeadUpdateRef}
-          toggleSort={toggleSort}
-        />
+        <table>
+          <TableHead
+            columns={columns}
+            options={options}
+            setCellRef={() => {}}
+            handleHeadUpdateRef={handleHeadUpdateRef}
+            toggleSort={toggleSort}
+          />
+        </table>
       </DndProvider>,
     );
-    const actualResult = mountWrapper.find(TableHeadCell);
-    assert.strictEqual(actualResult.length, 4);
+    const cells = screen.getAllByRole('columnheader');
+    expect(cells.length).toBe(4);
   });
 
   it('should render the label in the table head cell', () => {
     const options = {};
-    const toggleSort = () => {};
+    const toggleSort = vi.fn();
 
-    const mountWrapper = mount(
+    render(
       <DndProvider backend={HTML5Backend}>
-        <TableHead
-          columns={columns}
-          options={options}
-          setCellRef={() => {}}
-          handleHeadUpdateRef={handleHeadUpdateRef}
-          toggleSort={toggleSort}
-        />
+        <table>
+          <TableHead
+            columns={columns}
+            options={options}
+            setCellRef={() => {}}
+            handleHeadUpdateRef={handleHeadUpdateRef}
+            toggleSort={toggleSort}
+          />
+        </table>
       </DndProvider>,
     );
-    const labels = mountWrapper.find(TableHeadCell).map((n) => n.text());
-    assert.deepEqual(labels, ['First Name', 'Company', 'City Label', 'States']);
+
+    expect(screen.getByText('First Name')).toBeInTheDocument();
+    expect(screen.getByText('Company')).toBeInTheDocument();
+    expect(screen.getByText('City Label')).toBeInTheDocument();
+    expect(screen.getByText('States')).toBeInTheDocument();
   });
 
-  it('should render a table head with no cells', () => {
+  it('should render a table head with no cells when all columns have display: false', () => {
     const options = {};
-    const toggleSort = () => {};
+    const toggleSort = vi.fn();
 
     const newColumns = columns.map((column) => ({ ...column, display: false }));
-    const mountWrapper = mount(
+    const { container } = render(
       <DndProvider backend={HTML5Backend}>
-        <TableHead
-          columns={newColumns}
-          options={options}
-          setCellRef={() => {}}
-          handleHeadUpdateRef={handleHeadUpdateRef}
-          toggleSort={toggleSort}
-        />
+        <table>
+          <TableHead
+            columns={newColumns}
+            options={options}
+            setCellRef={() => {}}
+            handleHeadUpdateRef={handleHeadUpdateRef}
+            toggleSort={toggleSort}
+          />
+        </table>
       </DndProvider>,
     );
-    const actualResult = mountWrapper.find(TableHeadCell);
-    assert.strictEqual(actualResult.length, 0);
+
+    // No column headers should be visible
+    const cells = container.querySelectorAll('th');
+    expect(cells.length).toBe(0);
   });
 
-  it('should trigger toggleSort prop callback when calling method handleToggleColumn', () => {
+  it('should trigger toggleSort prop callback when clicking sort button', () => {
     const options = { sort: true };
-    const toggleSort = spy();
+    const toggleSort = vi.fn();
 
-    const wrapper = mount(
+    render(
       <DndProvider backend={HTML5Backend}>
-        <TableHead
-          columns={columns}
-          options={options}
-          setCellRef={() => {}}
-          handleHeadUpdateRef={handleHeadUpdateRef}
-          toggleSort={toggleSort}
-        />
+        <table>
+          <TableHead
+            columns={columns}
+            options={options}
+            setCellRef={() => {}}
+            handleHeadUpdateRef={handleHeadUpdateRef}
+            toggleSort={toggleSort}
+          />
+        </table>
       </DndProvider>,
     );
 
-    // console.log(wrapper.debug());
-    // Find button inside Tooltip
-    const instance = wrapper.find('button[data-testid="headcol-0"]').first();
-    // console.log('Found instance length:', instance.length);
-    instance.simulate('click');
+    const sortButton = screen.getByTestId('headcol-0');
+    fireEvent.click(sortButton);
 
-    assert.strictEqual(toggleSort.callCount, 1);
+    expect(toggleSort).toHaveBeenCalledTimes(1);
   });
 
-  it('should trigger selectRowUpdate prop callback and selectChecked state update when calling method handleRowSelect', () => {
+  it('should trigger selectRowUpdate prop callback when calling method handleRowSelect', () => {
     const options = { sort: true, selectableRows: 'multiple' };
-    const rowSelectUpdate = spy();
+    const rowSelectUpdate = vi.fn();
 
-    const wrapper = mount(
+    render(
       <DndProvider backend={HTML5Backend}>
-        <TableHead
-          columns={columns}
-          options={options}
-          setCellRef={() => {}}
-          handleHeadUpdateRef={handleHeadUpdateRef}
-          selectRowUpdate={rowSelectUpdate}
-        />
+        <table>
+          <TableHead
+            columns={columns}
+            options={options}
+            setCellRef={() => {}}
+            handleHeadUpdateRef={handleHeadUpdateRef}
+            selectRowUpdate={rowSelectUpdate}
+          />
+        </table>
       </DndProvider>,
     );
 
-    const instance = wrapper.find('input[type="checkbox"]');
-    instance.simulate('change', { target: { value: 'checked' } });
+    const checkbox = screen.getByRole('checkbox');
+    fireEvent.click(checkbox);
 
-    assert.strictEqual(rowSelectUpdate.callCount, 1);
+    expect(rowSelectUpdate).toHaveBeenCalledTimes(1);
   });
 
   it('should render a table head with checkbox if selectableRows = multiple', () => {
     const options = { selectableRows: 'multiple' };
 
-    const mountWrapper = mount(
+    render(
       <DndProvider backend={HTML5Backend}>
-        <TableHead
-          columns={columns}
-          options={options}
-          setCellRef={() => {}}
-          handleHeadUpdateRef={handleHeadUpdateRef}
-        />
+        <table>
+          <TableHead
+            columns={columns}
+            options={options}
+            setCellRef={() => {}}
+            handleHeadUpdateRef={handleHeadUpdateRef}
+          />
+        </table>
       </DndProvider>,
     );
 
-    const actualResult = mountWrapper.find(Checkbox);
-    assert.strictEqual(actualResult.length, 1);
+    expect(screen.getByRole('checkbox')).toBeInTheDocument();
   });
 
   it('should render a table head with no checkbox if selectableRows = single', () => {
     const options = { selectableRows: 'single' };
 
-    const mountWrapper = mount(
+    render(
       <DndProvider backend={HTML5Backend}>
-        <TableHead
-          columns={columns}
-          options={options}
-          setCellRef={() => {}}
-          handleHeadUpdateRef={handleHeadUpdateRef}
-        />
+        <table>
+          <TableHead
+            columns={columns}
+            options={options}
+            setCellRef={() => {}}
+            handleHeadUpdateRef={handleHeadUpdateRef}
+          />
+        </table>
       </DndProvider>,
     );
 
-    const actualResult = mountWrapper.find(Checkbox);
-    assert.strictEqual(actualResult.length, 0);
+    expect(screen.queryByRole('checkbox')).toBeNull();
   });
 
   it('should render a table head with no checkbox if selectableRows = none', () => {
     const options = { selectableRows: 'none' };
 
-    const mountWrapper = mount(
+    render(
       <DndProvider backend={HTML5Backend}>
-        <TableHead
-          columns={columns}
-          options={options}
-          setCellRef={() => {}}
-          handleHeadUpdateRef={handleHeadUpdateRef}
-        />
+        <table>
+          <TableHead
+            columns={columns}
+            options={options}
+            setCellRef={() => {}}
+            handleHeadUpdateRef={handleHeadUpdateRef}
+          />
+        </table>
       </DndProvider>,
     );
 
-    const actualResult = mountWrapper.find(Checkbox);
-    assert.strictEqual(actualResult.length, 0);
+    expect(screen.queryByRole('checkbox')).toBeNull();
   });
 });

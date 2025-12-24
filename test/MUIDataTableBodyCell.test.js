@@ -1,15 +1,13 @@
 import React from 'react';
-import { spy, stub } from 'sinon';
-import { mount, shallow } from 'enzyme';
-import { assert, expect, should } from 'chai';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, beforeAll, vi } from 'vitest';
 import MUIDataTable from '../src/MUIDataTable';
-import TableBodyCell from '../src/components/TableBodyCell';
 
-describe('<TableBodyCell />', function () {
+describe('<TableBodyCell />', () => {
   let data;
   let columns;
 
-  before(() => {
+  beforeAll(() => {
     columns = [
       {
         name: 'Name',
@@ -31,8 +29,8 @@ describe('<TableBodyCell />', function () {
   });
 
   it('should execute "onCellClick" prop when clicked if provided', () => {
-    var clickCount = 0;
-    var colIndex, rowIndex, colData;
+    let clickCount = 0;
+    let colIndex, rowIndex, colData;
     const options = {
       onCellClick: (val, colMeta) => {
         clickCount++;
@@ -42,24 +40,30 @@ describe('<TableBodyCell />', function () {
       },
     };
 
-    const fullWrapper = mount(<MUIDataTable columns={columns} data={data} options={options} />);
+    render(<MUIDataTable columns={columns} data={data} options={options} />);
 
-    fullWrapper.find('[data-testid="MuiDataTableBodyCell-0-0"]').at(0).simulate('click');
-    assert.strictEqual(clickCount, 1);
-    assert.strictEqual(colIndex, 0);
-    assert.strictEqual(rowIndex, 0);
-    assert.strictEqual(colData, 'Joe James');
+    // Click first cell
+    const cell00 = screen.getByTestId('MuiDataTableBodyCell-0-0');
+    fireEvent.click(cell00);
+    expect(clickCount).toBe(1);
+    expect(colIndex).toBe(0);
+    expect(rowIndex).toBe(0);
+    expect(colData).toBe('Joe James');
 
-    fullWrapper.find('[data-testid="MuiDataTableBodyCell-2-3"]').at(0).simulate('click');
-    assert.strictEqual(clickCount, 2);
-    assert.strictEqual(colIndex, 2);
-    assert.strictEqual(rowIndex, 3);
-    assert.strictEqual(colData, 'Dallas');
+    // Click another cell
+    const cell23 = screen.getByTestId('MuiDataTableBodyCell-2-3');
+    fireEvent.click(cell23);
+    expect(clickCount).toBe(2);
+    expect(colIndex).toBe(2);
+    expect(rowIndex).toBe(3);
+    expect(colData).toBe('Dallas');
 
-    fullWrapper.find('[data-testid="MuiDataTableBodyCell-1-2"]').at(0).simulate('click');
-    assert.strictEqual(clickCount, 3);
-    assert.strictEqual(colIndex, 1);
-    assert.strictEqual(rowIndex, 2);
-    assert.strictEqual(colData, 'Test Corp X');
+    // Click another cell
+    const cell12 = screen.getByTestId('MuiDataTableBodyCell-1-2');
+    fireEvent.click(cell12);
+    expect(clickCount).toBe(3);
+    expect(colIndex).toBe(1);
+    expect(rowIndex).toBe(2);
+    expect(colData).toBe('Test Corp X');
   });
 });

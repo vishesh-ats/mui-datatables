@@ -1,23 +1,23 @@
 import React from 'react';
-import { mount, shallow } from 'enzyme';
-import { assert } from 'chai';
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect, beforeAll } from 'vitest';
 import MUIDataTable from '../src/MUIDataTable';
 import Chip from '@mui/material/Chip';
 import TableFilterList from '../src/components/TableFilterList';
 
 const CustomChip = (props) => {
-  return <Chip variant="outlined" color="secondary" label={props.label} />;
+  return <Chip variant="outlined" color="secondary" label={props.label} data-testid="custom-chip" />;
 };
 
 const CustomFilterList = (props) => {
   return <TableFilterList {...props} ItemComponent={CustomChip} />;
 };
 
-describe('<MUIDataTable /> with custom components', function () {
+describe('<MUIDataTable /> with custom components', () => {
   let data;
   let columns;
 
-  before(() => {
+  beforeAll(() => {
     columns = [
       { name: 'Name' },
       {
@@ -41,7 +41,7 @@ describe('<MUIDataTable /> with custom components', function () {
   });
 
   it('should render a table with custom Chip in TableFilterList', () => {
-    const wrapper = mount(
+    render(
       <MUIDataTable
         columns={columns}
         data={data}
@@ -50,9 +50,9 @@ describe('<MUIDataTable /> with custom components', function () {
         }}
       />,
     );
-    const customFilterList = wrapper.find(CustomFilterList);
-    assert.lengthOf(customFilterList, 1);
-    const customChip = customFilterList.find(CustomChip);
-    assert.lengthOf(customChip, 1);
+
+    // Check that the custom chip is rendered
+    const customChip = screen.getByTestId('custom-chip');
+    expect(customChip).toBeInTheDocument();
   });
 });

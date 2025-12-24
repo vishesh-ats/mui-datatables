@@ -3,14 +3,7 @@ import { Waypoint } from "react-waypoint";
 import PropTypes from "prop-types";
 import MUIDataTable from "../../src/";
 import { createTheme } from "@mui/material/styles";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper
-} from "@mui/material";
+// Unused imports removed: Table, TableBody, TableCell, TableHead, TableRow, Paper
 import { withStyles } from "tss-react/mui";
 
 const styles = theme => ({
@@ -137,7 +130,7 @@ class MessageManager extends Component {
     return rows;
   }
 
-  getMessages(pageNum) {
+  getMessages(_pageNum) {
     const THIRTYROWS = 30;
     const messages = this.buildTestData(THIRTYROWS, 0);
     this.setState({
@@ -166,7 +159,7 @@ class MessageManager extends Component {
     });
 
   render() {
-    const { classes } = this.props;
+    const { classes: _classes } = this.props;
     const { filteredMessages } = this.state;
     return (
       <Fragment>

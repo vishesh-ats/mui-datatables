@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import MUIDataTable from "../../src/";
 
 class Example extends React.Component {
@@ -48,17 +47,17 @@ class Example extends React.Component {
     ]
   };
 
-  handleFilterNameChange = (event) => {
+  handleFilterNameChange = (_event) => {
     let string = prompt("Write a semicolon-separated string to change filter names in the first column!");
     if (string) this.setState({ filterOptions: string.split(';') });
   };
 
-  handleAddData = (event) => {
+  handleAddData = (_event) => {
     const string = prompt("Write a semicolon-separated string with values for 'Name', 'Title', 'Location', 'Age' and 'Salary' to add a new row of data!");
     if (string) this.setState({ data: [string.split(';'), ...this.state.data] });
   };
 
-  handleChangeDisplay = (event) => {
+  handleChangeDisplay = (_event) => {
     const string = prompt("Write a semicolon-separated string of display options for each of the 5 columns. Options are either 'true', 'false', or 'excluded'");
     if (string) this.setState({ display: string.split(';') });
   };

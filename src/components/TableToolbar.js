@@ -125,7 +125,8 @@ const PrintButton = ({ tableRef, Tooltip, print, options, classes, PrintIconComp
         aria-label={print}
         disabled={options.print === 'disabled'}
         onClick={handlePrint}
-        classes={{ root: classes.icon }}>
+        classes={{ root: classes.icon }}
+      >
         <PrintIconComponent />
       </IconButton>
     </Tooltip>
@@ -353,7 +354,8 @@ class TableToolbar extends React.Component {
       <Toolbar
         className={options.responsive !== RESPONSIVE_FULL_WIDTH_NAME ? classes.root : classes.fullWidthRoot}
         role={'toolbar'}
-        aria-label={'Table Toolbar'}>
+        aria-label={'Table Toolbar'}
+      >
         <div className={options.responsive !== RESPONSIVE_FULL_WIDTH_NAME ? classes.left : classes.fullWidthLeft}>
           {showSearch === true ? (
             options.customSearchRender ? (
@@ -374,7 +376,8 @@ class TableToolbar extends React.Component {
                 variant="h6"
                 className={
                   options.responsive !== RESPONSIVE_FULL_WIDTH_NAME ? classes.titleText : classes.fullWidthTitleText
-                }>
+                }
+              >
                 {title}
               </Typography>
             </div>
@@ -389,7 +392,8 @@ class TableToolbar extends React.Component {
                 ref={(el) => (this.searchButton = el)}
                 classes={{ root: this.getActiveIcon(classes, 'search') }}
                 disabled={options.search === 'disabled'}
-                onClick={this.handleSearchIconClick}>
+                onClick={this.handleSearchIconClick}
+              >
                 <SearchIconComponent />
               </IconButton>
             </Tooltip>
@@ -401,7 +405,8 @@ class TableToolbar extends React.Component {
                 aria-label={downloadCsv}
                 classes={{ root: classes.icon }}
                 disabled={options.download === 'disabled'}
-                onClick={this.handleCSVDownload}>
+                onClick={this.handleCSVDownload}
+              >
                 <DownloadIconComponent />
               </IconButton>
             </Tooltip>
@@ -428,7 +433,8 @@ class TableToolbar extends React.Component {
                     aria-label={viewColumns}
                     classes={{ root: this.getActiveIcon(classes, 'viewcolumns') }}
                     disabled={options.viewColumns === 'disabled'}
-                    onClick={this.setActiveIcon.bind(null, 'viewcolumns')}>
+                    onClick={this.setActiveIcon.bind(null, 'viewcolumns')}
+                  >
                     <ViewColumnIconComponent />
                   </IconButton>
                 </Tooltip>
@@ -457,7 +463,8 @@ class TableToolbar extends React.Component {
                     aria-label={filterTable}
                     classes={{ root: this.getActiveIcon(classes, 'filter') }}
                     disabled={options.filter === 'disabled'}
-                    onClick={this.setActiveIcon.bind(null, 'filter')}>
+                    onClick={this.setActiveIcon.bind(null, 'filter')}
+                  >
                     <FilterIconComponent />
                   </IconButton>
                 </Tooltip>

@@ -89,7 +89,7 @@ class Example extends React.Component {
         return true;
       },
       rowsExpanded: [0, 1],
-      renderExpandableRow: (rowData, rowMeta) => {
+      renderExpandableRow: (rowData, _rowMeta) => {
         const colSpan = rowData.length + 1;
         return (
           <TableRow>

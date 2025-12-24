@@ -1,16 +1,10 @@
-import Checkbox from '@mui/material/Checkbox';
-import Select from '@mui/material/Select';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import { assert } from 'chai';
-import { mount, shallow } from 'enzyme';
 import React from 'react';
-import { spy } from 'sinon';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import TableFilterList from '../src/components/TableFilterList';
 import getTextLabels from '../src/textLabels';
-import Chip from '@mui/material/Chip';
 
-describe('<TableFilterList />', function () {
+describe('<TableFilterList />', () => {
   let data;
   let columns;
   let filterData;
@@ -41,12 +35,13 @@ describe('<TableFilterList />', function () {
   it('should render a filter chip for a filter', () => {
     const options = { textLabels: getTextLabels() };
     const filterList = [['Joe James'], [], [], []];
-    const filterUpdate = spy();
+    const filterUpdate = vi.fn();
     const columnNames = columns.map((column) => ({
       name: column.name,
       filterType: column.filterType || options.filterType,
     }));
-    const wrapper = mount(
+
+    render(
       <TableFilterList
         options={options}
         filterListRenderers={columns.map((c) => {
@@ -65,11 +60,8 @@ describe('<TableFilterList />', function () {
       />,
     );
 
-    let numChips = wrapper.find(Chip).length;
-
-    assert.strictEqual(numChips, 1);
-
-    wrapper.unmount();
+    // Should have one chip for "Joe James"
+    expect(screen.getByText('Joe James')).toBeInTheDocument();
   });
 
   it('should place a class onto the filter chip', () => {
@@ -82,12 +74,13 @@ describe('<TableFilterList />', function () {
       },
     };
     const filterList = [['Joe James'], [], [], []];
-    const filterUpdate = spy();
+    const filterUpdate = vi.fn();
     const columnNames = columns.map((column) => ({
       name: column.name,
       filterType: column.filterType || options.filterType,
     }));
-    const wrapper = mount(
+
+    const { container } = render(
       <TableFilterList
         options={options}
         filterListRenderers={columns.map((c) => {
@@ -106,18 +99,17 @@ describe('<TableFilterList />', function () {
       />,
     );
 
-    let numChips = wrapper.find('.testClass123').hostNodes().length;
-    assert.strictEqual(numChips, 1);
-    wrapper.unmount();
+    const chipWithClass = container.querySelector('.testClass123');
+    expect(chipWithClass).toBeInTheDocument();
   });
 
   it('should remove a filter chip and call onFilterChipClose when its X icon is clicked', () => {
     const options = {
       textLabels: getTextLabels(),
-      onFilterChipClose: spy(),
+      onFilterChipClose: vi.fn(),
     };
     const filterList = [['Joe James'], [], [], []];
-    const filterUpdateCall = spy();
+    const filterUpdateCall = vi.fn();
     const filterUpdate = (index, filterValue, columnName, filterType, tmp, next) => {
       filterUpdateCall();
       next();
@@ -126,7 +118,8 @@ describe('<TableFilterList />', function () {
       name: column.name,
       filterType: column.filterType || options.filterType,
     }));
-    const wrapper = mount(
+
+    const { container } = render(
       <TableFilterList
         options={options}
         filterListRenderers={columns.map((c) => {
@@ -145,17 +138,16 @@ describe('<TableFilterList />', function () {
       />,
     );
 
-    wrapper.find('.MuiChip-deleteIcon').at(0).simulate('click');
+    const deleteIcon = container.querySelector('.MuiChip-deleteIcon');
+    fireEvent.click(deleteIcon);
 
-    wrapper.unmount();
-
-    assert.strictEqual(filterUpdateCall.callCount, 1); // ensures the call to update the filters was made
-    assert.strictEqual(options.onFilterChipClose.callCount, 1); // ensures the call to onFilterChipClose occurred
+    expect(filterUpdateCall).toHaveBeenCalledTimes(1);
+    expect(options.onFilterChipClose).toHaveBeenCalledTimes(1);
   });
 
   it('should correctly call customFilterListOptions.render and customFilterListOptions.update', () => {
-    const renderCall = spy();
-    const updateCall = spy();
+    const renderCall = vi.fn();
+    const updateCall = vi.fn();
     const columnsWithCustomFilterListOptions = [
       {
         name: 'name',
@@ -163,7 +155,6 @@ describe('<TableFilterList />', function () {
         display: true,
         sort: true,
         filter: true,
-        // buildColumns in MUIDataTables spreads options over the column object, so no need to nest this within options
         filterType: 'custom',
         customFilterListOptions: {
           render: () => {
@@ -183,10 +174,10 @@ describe('<TableFilterList />', function () {
 
     const options = {
       textLabels: getTextLabels(),
-      onFilterChipClose: spy(),
+      onFilterChipClose: vi.fn(),
     };
     const filterList = [['Joe James'], [], [], []];
-    const filterUpdateCall = spy();
+    const filterUpdateCall = vi.fn();
     const filterUpdate = (index, filterValue, columnName, filterType, customUpdate, next) => {
       if (customUpdate) customUpdate();
       filterUpdateCall();
@@ -197,7 +188,7 @@ describe('<TableFilterList />', function () {
       filterType: column.filterType || options.filterType,
     }));
 
-    const wrapper = mount(
+    const { container } = render(
       <TableFilterList
         options={options}
         filterListRenderers={columnsWithCustomFilterListOptions.map((c) => {
@@ -216,14 +207,13 @@ describe('<TableFilterList />', function () {
       />,
     );
 
-    assert.strictEqual(renderCall.callCount, 1);
-    assert.strictEqual(updateCall.callCount, 0);
+    expect(renderCall).toHaveBeenCalledTimes(1);
+    expect(updateCall).toHaveBeenCalledTimes(0);
 
-    wrapper.find('.MuiChip-deleteIcon').at(0).simulate('click');
+    const deleteIcon = container.querySelector('.MuiChip-deleteIcon');
+    fireEvent.click(deleteIcon);
 
-    wrapper.unmount();
-
-    assert.strictEqual(renderCall.callCount, 1);
-    assert.strictEqual(updateCall.callCount, 1);
+    expect(renderCall).toHaveBeenCalledTimes(1);
+    expect(updateCall).toHaveBeenCalledTimes(1);
   });
 });
