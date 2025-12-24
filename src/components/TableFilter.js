@@ -176,7 +176,6 @@ class TableFilter extends React.Component {
             {filterData[index].map((filterValue, filterIndex) => (
               <Grid key={filterIndex}>
                 <FormControlLabel
-                  key={filterIndex}
                   classes={{
                     root: classes.checkboxFormControl,
                     label: classes.checkboxFormControlLabel,
@@ -217,7 +216,7 @@ class TableFilter extends React.Component {
 
     return (
       <Grid key={index} size={width}>
-        <FormControl key={index} variant={'standard'} fullWidth>
+        <FormControl variant={'standard'} fullWidth>
           <InputLabel htmlFor={column.name}>{column.label}</InputLabel>
           <Select
             fullWidth
@@ -248,7 +247,7 @@ class TableFilter extends React.Component {
 
     return (
       <Grid key={index} size={width}>
-        <FormControl key={index} fullWidth>
+        <FormControl fullWidth>
           <TextField
             fullWidth
             variant={'standard'}
@@ -272,7 +271,7 @@ class TableFilter extends React.Component {
     const width = (column.filterOptions && column.filterOptions.fullWidth) === true ? 12 : 6;
     return (
       <Grid key={index} size={width}>
-        <FormControl key={index} variant={'standard'} fullWidth>
+        <FormControl variant={'standard'} fullWidth>
           <InputLabel htmlFor={column.name}>{column.label}</InputLabel>
           <Select
             multiple
@@ -322,9 +321,7 @@ class TableFilter extends React.Component {
 
     return (
       <Grid key={index} size={width}>
-        <FormControl key={index} fullWidth>
-          {display(filterList, this.handleCustomChange, index, column, filterData)}
-        </FormControl>
+        <FormControl fullWidth>{display(filterList, this.handleCustomChange, index, column, filterData)}</FormControl>
       </Grid>
     );
   }

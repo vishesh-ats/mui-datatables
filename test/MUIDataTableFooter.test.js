@@ -17,6 +17,7 @@ describe('<TableFooter />', () => {
   });
 
   it('should render a table footer', () => {
+    // TableFooter component renders its own table structure internally
     render(
       <TableFooter
         options={options}
@@ -37,7 +38,14 @@ describe('<TableFooter />', () => {
       rowsPerPageOptions: [5, 10, 15],
       textLabels: getTextLabels(),
       customFooter: (rowCount, page, rowsPerPage, changeRowsPerPage, changePage, textLabels) => {
-        return <div data-testid="custom-footer">Custom Footer</div>;
+        // customFooter must return valid table content (tfoot, tbody, etc.) since it's wrapped in <table>
+        return (
+          <tfoot>
+            <tr>
+              <td data-testid="custom-footer">Custom Footer</td>
+            </tr>
+          </tfoot>
+        );
       },
     };
 
