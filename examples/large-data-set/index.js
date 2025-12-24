@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import MUIDataTable from "../../src/";
 import { debounceSearchRender } from "../../src/";
 import { Button } from '@mui/material';

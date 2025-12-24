@@ -14,14 +14,15 @@ class Example extends React.Component {
         name: 'fullName',
         label: 'Full Name',
         options: {
-          customBodyRender: (value, tableMeta, updateValue) => {
+          customBodyRender: (value, _tableMeta, _updateValue) => {
             // Here you can render a more complex display.
             // You're given access to tableMeta, which has
             // the rowData (as well as the original object data).
             // See the console for a detailed look at this object.
 
-            console.log('customBodyRender');
-            console.dir(tableMeta);
+            // Debug logging removed for cleaner console
+            // console.log('customBodyRender');
+            // console.dir(tableMeta);
             return value;
           },
         },
@@ -94,7 +95,7 @@ class Example extends React.Component {
 
   // mock async function
   xhrRequest = (url, page, sortOrder = {}) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       // mock page data
       let fullData = this.getSrcData();
       const total = fullData.length; // mock record count from server - normally this would be a number attached to the return data
@@ -143,7 +144,7 @@ class Example extends React.Component {
   };
 
   render() {
-    const { data, page, count, isLoading, rowsPerPage, sortOrder } = this.state;
+    const { data, page: _page, count, isLoading, rowsPerPage, sortOrder } = this.state;
 
     const options = {
       filter: true,
@@ -155,7 +156,7 @@ class Example extends React.Component {
       rowsPerPageOptions: [],
       sortOrder: sortOrder,
       onTableChange: (action, tableState) => {
-        console.log(action, tableState);
+        // console.log(action, tableState); // Uncomment to debug
 
         // a developer could react to change on an action basis or
         // examine the state as a whole and do whatever they want
@@ -168,13 +169,15 @@ class Example extends React.Component {
             this.sort(tableState.page, tableState.sortOrder);
             break;
           default:
-            console.log('action not handled.');
+            // console.log('action not handled.'); // Uncomment to debug
+            break;
         }
       },
     };
 
-    console.log('COLUMNS');
-    console.dir(JSON.parse(JSON.stringify(this.state.columns)));
+    // Debug logging removed for cleaner console
+    // console.log('COLUMNS');
+    // console.dir(JSON.parse(JSON.stringify(this.state.columns)));
 
     return (
       <div>

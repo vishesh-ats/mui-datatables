@@ -80,12 +80,12 @@ class TableResize extends React.Component {
     let finalCells = Object.entries(this.cellsRef);
     let cellMinusOne = finalCells.filter((_item, ix) => ix + 1 < finalCells.length);
 
-    cellMinusOne.forEach(([key, item], idx) => {
+    cellMinusOne.forEach(([key, item], _idx) => {
       if (!item) return;
       let elRect = item.getBoundingClientRect();
       let left = elRect.left;
       left = (left || 0) - parentOffsetLeft;
-      const elStyle = window.getComputedStyle(item, null);
+      const _elStyle = window.getComputedStyle(item, null);
       resizeCoords[key] = { left: left + item.offsetWidth };
     });
     this.setState({ tableWidth, tableHeight, resizeCoords }, this.updateWidths);
@@ -115,14 +115,14 @@ class TableResize extends React.Component {
     });
   };
 
-  onResizeStart = (id, e) => {
+  onResizeStart = (id, _e) => {
     const tableEl = this.tableRef;
     const originalWidth = tableEl.style.width;
     let lastColumn = 0;
     tableEl.style.width = '1px';
 
     let finalCells = Object.entries(this.cellsRef);
-    finalCells.forEach(([key, item], idx) => {
+    finalCells.forEach(([key, item], _idx) => {
       let elRect = item ? item.getBoundingClientRect() : { width: 0, left: 0 };
       this.minWidths[key] = elRect.width;
       lastColumn = Math.max(key, lastColumn);
@@ -135,14 +135,14 @@ class TableResize extends React.Component {
   onResizeMove = (id, e) => {
     const { isResize, resizeCoords, lastColumn } = this.state;
 
-    const prevCol = id => {
+    const prevCol = (id) => {
       let nextId = id - 1;
       while (typeof resizeCoords[nextId] === 'undefined' && nextId >= 0) {
         nextId--;
       }
       return nextId;
     };
-    const nextCol = id => {
+    const nextCol = (id) => {
       let nextId = id + 1;
       let tries = 0;
       while (typeof resizeCoords[nextId] === 'undefined' && tries < 20) {
@@ -162,7 +162,7 @@ class TableResize extends React.Component {
 
     let parentOffsetLeft = getParentOffsetLeft(tableEl);
 
-    const nextCoord = id => {
+    const nextCoord = (id) => {
       let nextId = id + 1;
       let tries = 0;
       while (typeof resizeCoords[nextId] === 'undefined' && tries < 20) {
@@ -171,7 +171,7 @@ class TableResize extends React.Component {
       }
       return resizeCoords[nextId];
     };
-    const prevCoord = id => {
+    const prevCoord = (id) => {
       let nextId = id - 1;
       while (typeof resizeCoords[nextId] === 'undefined' && nextId >= 0) {
         nextId--;
@@ -221,7 +221,7 @@ class TableResize extends React.Component {
         return (selectableRows !== 'none' && id === 0) || (selectableRows === 'none' && id === firstColumn);
       };
 
-      const isLastColumn = (id, finalCells) => {
+      const isLastColumn = (id, _finalCells) => {
         return id === prevCol(lastColumn);
       };
 
@@ -245,7 +245,7 @@ class TableResize extends React.Component {
     }
   };
 
-  onResizeEnd = (id, e) => {
+  onResizeEnd = (_id, _e) => {
     this.setState({ isResize: false, id: null });
   };
 
@@ -270,7 +270,8 @@ class TableResize extends React.Component {
                 height: tableHeight - 2,
                 cursor: 'ew-resize',
                 zIndex: 1000,
-              }}>
+              }}
+            >
               <div
                 aria-hidden="true"
                 onMouseDown={this.onResizeStart.bind(null, key)}

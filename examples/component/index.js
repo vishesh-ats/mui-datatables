@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import FormControlLabel from '@mui/material/FormControlLabel';
 import TextField from '@mui/material/TextField';
 import Switch from '@mui/material/Switch';
@@ -63,7 +62,7 @@ class Example extends React.Component {
         name: "Salary",
         options: {
           filter: true,
-          customBodyRender: (value, tableMeta, updateValue) => {
+          customBodyRender: (value, _tableMeta, _updateValue) => {
 
             const nf = new Intl.NumberFormat('en-US', {
               style: 'currency',

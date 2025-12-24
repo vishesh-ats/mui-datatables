@@ -22,7 +22,10 @@ module.exports = {
     port: 5050,
     client: {
       logging: 'warn',
-      overlay: true,
+      overlay: {
+        warnings: false,
+        errors: true,
+      },
     },
     static: {
       directory: __dirname,
@@ -55,8 +58,9 @@ module.exports = {
     }),
     new ESLintPlugin({
       extensions: ['js', 'jsx'],
-      configType: 'eslintrc',
-      overrideConfigFile: path.resolve(__dirname, '.eslintrc'),
+      configType: 'flat',
+      eslintPath: 'eslint/use-at-your-own-risk',
+      overrideConfigFile: path.resolve(__dirname, 'eslint.config.mjs'),
     }),
   ],
 };

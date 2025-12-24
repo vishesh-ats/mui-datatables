@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import { Chip } from "@mui/material";
 import MUIDataTable from "../../src/";
 

@@ -3,14 +3,7 @@ import { Waypoint } from "react-waypoint";
 import PropTypes from "prop-types";
 import MUIDataTable from "../../src/";
 import { createTheme } from "@mui/material/styles";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper
-} from "@mui/material";
+// Unused imports removed: Table, TableBody, TableCell, TableHead, TableRow, Paper
 import { withStyles } from "tss-react/mui";
 
 const styles = theme => ({
@@ -112,7 +105,6 @@ class MessageManager extends Component {
     }
   };
 
-  /*eslint-disable */
   buildTestData(count, startingIndex) {
     const data = [
       ["Template 1", "Requester Jerry"],
@@ -137,9 +129,8 @@ class MessageManager extends Component {
     }
     return rows;
   }
-  /* eslint-enable */
 
-  getMessages(pageNum) {
+  getMessages(_pageNum) {
     const THIRTYROWS = 30;
     const messages = this.buildTestData(THIRTYROWS, 0);
     this.setState({
@@ -167,9 +158,8 @@ class MessageManager extends Component {
       }
     });
 
-  // eslint-disable-next-line max-lines-per-function
   render() {
-    const { classes } = this.props;
+    const { classes: _classes } = this.props;
     const { filteredMessages } = this.state;
     return (
       <Fragment>

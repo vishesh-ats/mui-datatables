@@ -6,7 +6,6 @@ import {
   TextField,
   Checkbox,
   FormControlLabel,
-  Grid,
   Select,
   InputLabel,
   MenuItem
@@ -59,7 +58,7 @@ class Example extends React.Component {
             }
           },
           filterOptions: {
-            logic: (location, filters, row) => {
+            logic: (location, filters, _row) => {
               if (filters.length) return !filters.includes(location);
               return false;
             },
@@ -241,7 +240,7 @@ class Example extends React.Component {
       filter: true,
       filterType: 'multiselect',
       responsive: 'standard',
-      setFilterChipProps: (colIndex, colName, data) => {
+      setFilterChipProps: (_colIndex, _colName, _data) => {
         //console.log(colIndex, colName, data);
         return {
           color: 'primary',

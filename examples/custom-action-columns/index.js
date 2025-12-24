@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import MUIDataTable from "../../src/";
 
 class Example extends React.Component {
@@ -50,7 +49,7 @@ class Example extends React.Component {
           filter: false,
           sort: false,
           empty: true,
-          customBodyRenderLite: (dataIndex) => {
+          customBodyRenderLite: (_dataIndex) => {
             return (
               <button onClick={() => {
                 const { data } = this.state;
@@ -116,7 +115,7 @@ class Example extends React.Component {
           filter: false,
           sort: false,
           empty: true,
-          customBodyRenderLite: (dataIndex) => {
+          customBodyRenderLite: (_dataIndex) => {
             return (
               <button onClick={() => {
                 const { data } = this.state;
@@ -131,7 +130,7 @@ class Example extends React.Component {
       },
     ];
 
-    const data1 = [
+    const _data1 = [
       {Name: "Gabby George", Title: "Business Analyst", Location: "Minneapolis", Age: 30, Salary: "$100,000"},
       {Name: "Aiden Lloyd", Title: "Business Consultant", Location: "Dallas", Age: 55, Salary: "$200,000"},
       {Name: "Jaden Collins", Title: "Attorney", Location: "Santa Ana", Age: 27, Salary: "$500,000"},

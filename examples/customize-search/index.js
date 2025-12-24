@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import ReactDOM from 'react-dom';
 import MUIDataTable from '../../src/';
 
 class Example extends React.Component {
@@ -84,15 +83,15 @@ class Example extends React.Component {
       page: 0,
       searchText: this.state.searchText,
       searchProps: {
-        onBlur: (e) => {
+        onBlur: (_e) => {
           console.log('onBlur!');
         },
-        onKeyUp:(e) => {
+        onKeyUp:(_e) => {
           console.log('onKeyUp!');
         }
       },
       searchPlaceholder: 'Your Custom Search Placeholder',
-      customSearch: (searchQuery, currentRow, columns) => {
+      customSearch: (searchQuery, currentRow, _columns) => {
         let isFound = false;
         currentRow.forEach(col => {
           if (col.toString().indexOf(searchQuery) >= 0) {

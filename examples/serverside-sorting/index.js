@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import MUIDataTable from '../../src';
 import { CircularProgress, Typography } from '@mui/material';
 import Cities from './cities';
@@ -35,7 +34,7 @@ class Example extends React.Component {
       column = url.column;
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       const srcData = [
         ['Gabby George', 'Business Analyst', 'Minneapolis', 10, '$210,000'],
         ['Aiden Lloyd', 'Business Consultant', 'Dallas', 13, '$250,000'],

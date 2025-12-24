@@ -20,7 +20,8 @@ const ExpandButton = ({
           onClick={onExpand}
           style={{ padding: 0 }}
           disabled={expandableRowsHeader === false}
-          className={buttonClass}>
+          className={buttonClass}
+        >
           <RemoveIcon id="expandable-button" className={iconIndeterminateClass} />
         </IconButton>
       ) : (
@@ -28,7 +29,8 @@ const ExpandButton = ({
           onClick={onExpand}
           style={{ padding: 0 }}
           disabled={expandableRowsHeader === false}
-          className={buttonClass}>
+          className={buttonClass}
+        >
           <KeyboardArrowRightIcon id="expandable-button" className={iconClass} />
         </IconButton>
       )}

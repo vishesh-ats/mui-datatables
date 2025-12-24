@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import MUIDataTable from "../../src/";
 
 class Example extends React.Component {
@@ -20,7 +19,7 @@ class Example extends React.Component {
       filter: true,
       filterType: 'dropdown',
       responsive: 'vertical',
-      customSort: (data, colIndex, order, meta) => {
+      customSort: (data, colIndex, order, _meta) => {
         return data.sort((a, b) => {
           return (a.data[colIndex].length < b.data[colIndex].length ? -1: 1 ) * (order === 'desc' ? 1 : -1);
         });

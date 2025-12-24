@@ -103,7 +103,7 @@ class Example extends React.Component {
               },
             };
           },
-          setCellHeaderProps: value => {
+          setCellHeaderProps: _value => {
             return {
               className: clsx({
                 [this.props.classes.NameCell]: true,
@@ -119,7 +119,7 @@ class Example extends React.Component {
         name: 'Title',
         options: {
           filter: true,
-          setCellHeaderProps: value => ({ style: { textDecoration: 'underline' } }),
+          setCellHeaderProps: _value => ({ style: { textDecoration: 'underline' } }),
         },
       },
       {
