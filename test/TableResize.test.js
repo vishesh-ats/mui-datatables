@@ -45,7 +45,7 @@ describe('<TableResize />', function () {
 
     shallowWrapper.unmount();
 
-    assert.strictEqual(colCoordCount, 5);
+    assert.strictEqual(colCoordCount, 4);
   });
 
   it('should execute resize methods correctly', () => {

@@ -168,7 +168,7 @@ const handleHover = (opts) => {
 const useColumnDrop = (opts) => {
   const [, drop] = useDrop({
     accept: 'HEADER',
-    drop: drop,
+    drop: opts.drop,
     hover: (item, mon) => handleHover(Object.assign({}, opts, { item, mon })),
     collect: (mon) => ({
       isOver: !!mon.isOver(),

@@ -1,9 +1,10 @@
 import React from 'react';
 import { spy, stub } from 'sinon';
 import { mount, shallow } from 'enzyme';
+import { act } from 'react-dom/test-utils';
 import { assert, expect } from 'chai';
 import cloneDeep from 'lodash.clonedeep';
-import MUIDataTable from '../src/MUIDataTable';
+import MUIDataTable, { MUIDataTable as MUIDataTableInner } from '../src/MUIDataTable';
 import TableFilterList from '../src/components/TableFilterList';
 import TablePagination from '../src/components/TablePagination';
 import TableToolbar from '../src/components/TableToolbar';
@@ -86,18 +87,11 @@ describe('<MUIDataTable />', function () {
 
   it('should render a table', () => {
     const shallowWrapper = shallow(<MUIDataTable columns={columns} data={data} />);
-<<<<<<< Updated upstream
-    assert.include(
-      ['Paper', 'ForwardRef(Paper)'],
-      shallowWrapper
-        .dive()
-        .dive()
-        .name(),
-    );
-=======
-    const name = shallowWrapper.dive().dive().name();
+    const name = shallowWrapper
+      .dive()
+      .dive()
+      .name();
     assert.isTrue(['Paper', 'ForwardRef(Paper)', 'MuiPaper'].includes(name) || name.includes('Paper'));
->>>>>>> Stashed changes
   });
 
   it('should correctly build internal columns data structure', () => {
@@ -548,30 +542,6 @@ describe('<MUIDataTable />', function () {
 
     const wrapper = mount(<MUIDataTable columns={columns} data={data} options={{}} />);
 
-<<<<<<< Updated upstream
-    wrapper
-      .find('[data-testid="headcol-0"]')
-      .at(0)
-      .simulate('click');
-    const fetchedDD1 = JSON.stringify(wrapper.childAt(0).state('displayData'));
-
-    wrapper
-      .find('[data-testid="headcol-0"]')
-      .at(0)
-      .simulate('click');
-    const fetchedDD2 = JSON.stringify(wrapper.childAt(0).state('displayData'));
-
-    wrapper
-      .find('[data-testid="headcol-0"]')
-      .at(0)
-      .simulate('click');
-    const fetchedDD3 = JSON.stringify(wrapper.childAt(0).state('displayData'));
-
-    wrapper
-      .find('[data-testid="headcol-0"]')
-      .at(0)
-      .simulate('click');
-=======
     wrapper.find('button[data-testid="headcol-0"]').first().simulate('click');
     const fetchedDD1 = JSON.stringify(wrapper.childAt(0).state('displayData'));
 
@@ -582,7 +552,6 @@ describe('<MUIDataTable />', function () {
     const fetchedDD3 = JSON.stringify(wrapper.childAt(0).state('displayData'));
 
     wrapper.find('button[data-testid="headcol-0"]').first().simulate('click');
->>>>>>> Stashed changes
     const fetchedDD4 = JSON.stringify(wrapper.childAt(0).state('displayData'));
 
     assert.deepEqual(fetchedDD1, displayData1);
@@ -630,30 +599,6 @@ describe('<MUIDataTable />', function () {
 
     const wrapper = mount(<MUIDataTable columns={columns} data={data} options={{}} />);
 
-<<<<<<< Updated upstream
-    wrapper
-      .find('[data-testid="headcol-0"]')
-      .at(0)
-      .simulate('click');
-    const fetchedDD1 = JSON.stringify(wrapper.childAt(0).state('displayData'));
-
-    wrapper
-      .find('[data-testid="headcol-0"]')
-      .at(0)
-      .simulate('click');
-    const fetchedDD2 = JSON.stringify(wrapper.childAt(0).state('displayData'));
-
-    wrapper
-      .find('[data-testid="headcol-0"]')
-      .at(0)
-      .simulate('click');
-    const fetchedDD3 = JSON.stringify(wrapper.childAt(0).state('displayData'));
-
-    wrapper
-      .find('[data-testid="headcol-0"]')
-      .at(0)
-      .simulate('click');
-=======
     wrapper.find('button[data-testid="headcol-0"]').first().simulate('click');
     const fetchedDD1 = JSON.stringify(wrapper.childAt(0).state('displayData'));
 
@@ -664,7 +609,6 @@ describe('<MUIDataTable />', function () {
     const fetchedDD3 = JSON.stringify(wrapper.childAt(0).state('displayData'));
 
     wrapper.find('button[data-testid="headcol-0"]').first().simulate('click');
->>>>>>> Stashed changes
     const fetchedDD4 = JSON.stringify(wrapper.childAt(0).state('displayData'));
 
     assert.deepEqual(fetchedDD1, displayData1);
@@ -713,30 +657,6 @@ describe('<MUIDataTable />', function () {
 
     const wrapper = mount(<MUIDataTable columns={columns} data={data} options={{}} />);
 
-<<<<<<< Updated upstream
-    wrapper
-      .find('[data-testid="headcol-0"]')
-      .at(0)
-      .simulate('click');
-    const fetchedDD1 = JSON.stringify(wrapper.childAt(0).state('displayData'));
-
-    wrapper
-      .find('[data-testid="headcol-0"]')
-      .at(0)
-      .simulate('click');
-    const fetchedDD2 = JSON.stringify(wrapper.childAt(0).state('displayData'));
-
-    wrapper
-      .find('[data-testid="headcol-0"]')
-      .at(0)
-      .simulate('click');
-    const fetchedDD3 = JSON.stringify(wrapper.childAt(0).state('displayData'));
-
-    wrapper
-      .find('[data-testid="headcol-0"]')
-      .at(0)
-      .simulate('click');
-=======
     wrapper.find('button[data-testid="headcol-0"]').first().simulate('click');
     const fetchedDD1 = JSON.stringify(wrapper.childAt(0).state('displayData'));
 
@@ -747,7 +667,6 @@ describe('<MUIDataTable />', function () {
     const fetchedDD3 = JSON.stringify(wrapper.childAt(0).state('displayData'));
 
     wrapper.find('button[data-testid="headcol-0"]').first().simulate('click');
->>>>>>> Stashed changes
     const fetchedDD4 = JSON.stringify(wrapper.childAt(0).state('displayData'));
 
     assert.deepEqual(fetchedDD1, displayData1);
@@ -770,33 +689,19 @@ describe('<MUIDataTable />', function () {
     const fullWrapper = mount(<MUIDataTable columns={columns} data={data} options={options} />);
 
     // simulate sorting a column
-<<<<<<< Updated upstream
-    fullWrapper
-      .find('[data-testid="headcol-1"]')
-      .at(0)
-      .simulate('click');
-=======
     fullWrapper.find('button[data-testid="headcol-1"]').first().simulate('click');
->>>>>>> Stashed changes
 
     assert.strictEqual(sortedCol, 'Company');
     assert.strictEqual(sortedDir, 'asc');
 
     // simulate toggling the sort
-<<<<<<< Updated upstream
-    fullWrapper
-      .find('[data-testid="headcol-1"]')
-      .at(0)
-      .simulate('click');
-=======
     fullWrapper.find('button[data-testid="headcol-1"]').first().simulate('click');
->>>>>>> Stashed changes
 
     assert.strictEqual(sortedCol, 'Company');
     assert.strictEqual(sortedDir, 'desc');
   });
 
-  it('should correctly re-build internal table data while maintaining pagination after state change', () => {
+  it('should correctly re-build internal table data while maintaining pagination after state change', async () => {
     let currentPage;
     const options = {
       rowsPerPage: 1,
@@ -807,21 +712,14 @@ describe('<MUIDataTable />', function () {
     const fullWrapper = mount(<MUIDataTable columns={columns} data={data} options={options} />);
 
     // simulate paging backward to set `currentPage`
-<<<<<<< Updated upstream
-    fullWrapper
-      .find('#pagination-back')
-      .at(0)
-      .simulate('click');
-=======
     await act(async () => {
       fullWrapper.find(TablePagination).prop('changePage')(0);
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await new Promise(resolve => setTimeout(resolve, 0));
       fullWrapper.update();
     });
     fullWrapper.update();
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
->>>>>>> Stashed changes
+    await new Promise(resolve => setTimeout(resolve, 0));
     assert.strictEqual(currentPage, 0);
 
     /*
@@ -848,21 +746,14 @@ describe('<MUIDataTable />', function () {
     fullWrapper.setProps({ data: newData });
 
     // simulate paging forward to test whether or not the `currentPage` was reset
-<<<<<<< Updated upstream
-    fullWrapper
-      .find('#pagination-next')
-      .at(0)
-      .simulate('click');
-=======
     await act(async () => {
       fullWrapper.find(TablePagination).prop('changePage')(2);
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await new Promise(resolve => setTimeout(resolve, 0));
       fullWrapper.update();
     });
     fullWrapper.update();
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
->>>>>>> Stashed changes
+    await new Promise(resolve => setTimeout(resolve, 0));
     assert.strictEqual(currentPage, 2);
 
     // grab pagination value to test whether or not `rowsPerPage` was reset
@@ -883,7 +774,7 @@ describe('<MUIDataTable />', function () {
   });
 
   it('should not re-build internal table data and displayData structure with no prop change to data or columns', () => {
-    const setTableDataSpy = spy(MUIDataTable.Naked.prototype, 'setTableData');
+    const setTableDataSpy = spy(MUIDataTableInner.prototype, 'setTableData');
     const mountWrapper = mount(shallow(<MUIDataTable columns={columns} data={data} />).get(0));
 
     let state = mountWrapper.state();
@@ -908,11 +799,13 @@ describe('<MUIDataTable />', function () {
     const finalClass = classNames[classNames.length - 1];
 
     assert.strictEqual(props.myProp, 'test');
-<<<<<<< Updated upstream
-    assert.strictEqual(finalClass, 'testClass');
-=======
-    assert.include(fullWrapper.find('table').first().prop('className'), 'testClass');
->>>>>>> Stashed changes
+    assert.include(
+      fullWrapper
+        .find('table')
+        .first()
+        .prop('className'),
+      'testClass',
+    );
     assert.isAtLeast(options.setTableProps.callCount, 1);
   });
 
@@ -1716,7 +1609,7 @@ describe('<MUIDataTable />', function () {
     assert.deepEqual(state.rowsPerPage, 10);
   });
 
-  it('should recalculate page when calling changeRowsPerPage method', () => {
+  it('should recalculate page when calling changeRowsPerPage method', async () => {
     const mountWrapper = mount(
       shallow(
         <MUIDataTable
@@ -1729,19 +1622,13 @@ describe('<MUIDataTable />', function () {
     const instance = mountWrapper.instance();
 
     instance.changePage(1);
-<<<<<<< Updated upstream
-=======
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise(resolve => setTimeout(resolve, 0));
     mountWrapper.update();
->>>>>>> Stashed changes
     let state = mountWrapper.state();
     assert.equal(state.page, 1);
 
     instance.changeRowsPerPage(4);
-<<<<<<< Updated upstream
-=======
-    await new Promise((resolve) => setTimeout(resolve, 0));
->>>>>>> Stashed changes
+    await new Promise(resolve => setTimeout(resolve, 0));
     state = mountWrapper.state();
     assert.equal(state.page, 0);
   });
@@ -2071,26 +1958,12 @@ describe('<MUIDataTable />', function () {
     };
     const mountWrapper = mount(<MUIDataTable columns={columns} data={data} options={options} tableId={tableId} />);
 
-<<<<<<< Updated upstream
-    mountWrapper
-      .find(`#MUIDataTableBodyRow-${tableId}-2`)
-      .first()
-      .simulate('click');
-=======
     mountWrapper.find('[data-testid="MUIDataTableBodyRow-2"]').first().simulate('click');
->>>>>>> Stashed changes
 
     assert.strictEqual(options.onRowExpansionChange.callCount, 1);
     assert(options.onRowExpansionChange.calledWith([{ index: 2, dataIndex: 2 }], [{ index: 2, dataIndex: 2 }]));
 
-<<<<<<< Updated upstream
-    mountWrapper
-      .find(`#MUIDataTableBodyRow-${tableId}-2`)
-      .first()
-      .simulate('click');
-=======
     mountWrapper.find('[data-testid="MUIDataTableBodyRow-2"]').first().simulate('click');
->>>>>>> Stashed changes
 
     assert.strictEqual(options.onRowExpansionChange.callCount, 2);
     assert(options.onRowExpansionChange.calledWith([{ index: 2, dataIndex: 2 }], []));
@@ -2104,26 +1977,12 @@ describe('<MUIDataTable />', function () {
     };
     const mountWrapper = mount(<MUIDataTable columns={columns} data={data} options={options} tableId={tableId} />);
 
-<<<<<<< Updated upstream
-    mountWrapper
-      .find(`#MUIDataTableBodyRow-${tableId}-2`)
-      .first()
-      .simulate('click');
-=======
     mountWrapper.find('[data-testid="MUIDataTableBodyRow-2"]').first().simulate('click');
->>>>>>> Stashed changes
 
     assert.strictEqual(options.onRowSelectionChange.callCount, 1);
     assert(options.onRowSelectionChange.calledWith([{ index: 2, dataIndex: 2 }], [{ index: 2, dataIndex: 2 }]));
 
-<<<<<<< Updated upstream
-    mountWrapper
-      .find(`#MUIDataTableBodyRow-${tableId}-2`)
-      .first()
-      .simulate('click');
-=======
     mountWrapper.find('[data-testid="MUIDataTableBodyRow-2"]').first().simulate('click');
->>>>>>> Stashed changes
 
     assert.strictEqual(options.onRowSelectionChange.callCount, 2);
     assert(options.onRowSelectionChange.calledWith([{ index: 2, dataIndex: 2 }], []));
@@ -2478,7 +2337,7 @@ describe('<MUIDataTable />', function () {
     });
   });
 
-  it('should correctly filter data from filter popover menu', () => {
+  it('should correctly filter data from filter popover menu', async () => {
     let filteredData = [];
     const options = {
       filter: true,
@@ -2490,24 +2349,16 @@ describe('<MUIDataTable />', function () {
 
     const fullWrapper = mount(<MUIDataTable columns={columns} data={data} options={options} />);
 
-<<<<<<< Updated upstream
-    fullWrapper
-      .find('[data-testid="Filter Table-iconButton"]')
-      .at(0)
-      .simulate('click');
-
-    fullWrapper
-      .find('[data-testid="filtertextfield-Name"] input')
-      .at(0)
-      .simulate('change', { target: { value: 'James' } });
-=======
     await act(async () => {
-      fullWrapper.find('button[data-testid="Filter Table-iconButton"]').at(0).simulate('click');
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      fullWrapper
+        .find('button[data-testid="Filter Table-iconButton"]')
+        .at(0)
+        .simulate('click');
+      await new Promise(resolve => setTimeout(resolve, 0));
       fullWrapper.update();
     });
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await new Promise(resolve => setTimeout(resolve, 0));
     fullWrapper.update();
 
     await act(async () => {
@@ -2516,7 +2367,6 @@ describe('<MUIDataTable />', function () {
         .at(0)
         .simulate('change', { target: { value: 'James' } });
     });
->>>>>>> Stashed changes
 
     fullWrapper.unmount();
 

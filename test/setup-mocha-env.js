@@ -1,29 +1,41 @@
 import Enzyme from 'enzyme';
 import React from 'react';
-<<<<<<< Updated upstream
-import Adapter from 'enzyme-adapter-react-16';
-=======
-import Adapter from '@cfaester/enzyme-adapter-react-18';
+const Adapter = require('@cfaester/enzyme-adapter-react-18').default;
 import { JSDOM } from 'jsdom';
->>>>>>> Stashed changes
 
 /* required when running >= 16.0 */
 Enzyme.configure({ adapter: new Adapter() });
 
 function setupDom() {
-  const { JSDOM } = require('jsdom');
-  const Node = require('jsdom/lib/jsdom/living/node-document-position');
-
-  const dom = new JSDOM('<!doctype html><html><body></body></html>');
+  const dom = new JSDOM('<!doctype html><html><body></body></html>', { url: 'http://localhost/' });
 
   global.window = dom.window;
   global.document = window.document;
-  global.Node = Node;
+  // global.Node = Node; // Node is not always easily available from jsdom import, usually window.Node works
 
-  global.navigator = {
-    userAgent: 'node.js',
-    appVersion: '',
-  };
+  if (!global.navigator) {
+    global.navigator = {
+      userAgent: 'node.js',
+      appVersion: '',
+    };
+  } else {
+    // If it exists, try to override properties if needed, or just leave it
+    // In newer JSDOM/Node, it might be present.
+    // We can try to define it if configurable
+    try {
+      global.DocumentFragment = window.DocumentFragment;
+      Object.defineProperty(global, 'navigator', {
+        value: {
+          userAgent: 'node.js',
+          appVersion: '',
+        },
+        writable: true,
+        configurable: true,
+      });
+    } catch (e) {
+      console.warn('Could not override global.navigator', e);
+    }
+  }
 
   function copyProps(src, target) {
     const props = Object.getOwnPropertyNames(src)
@@ -33,6 +45,9 @@ function setupDom() {
   }
 
   copyProps(dom.window, global);
+
+  // Fix: Node is available on window
+  global.Node = window.Node;
 
   const KEYS = ['HTMLElement'];
   KEYS.forEach((key) => {
@@ -62,12 +77,35 @@ function setupDom() {
   global.HTMLInputElement = global.window.HTMLInputElement;
   global.Element = global.window.Element;
   global.Event = global.window.Event;
-  global.dispatchEvent = global.window.dispatchEvent;
   global.window.getComputedStyle = () => ({});
+  // Aggressive URL mock
+  const NativeURL = global.window.URL;
 
-  Object.defineProperty(global.window.URL, 'createObjectURL', { value: () => {} });
-  global.Blob = () => '';
+  // We accept that we might break strict URL validation for specific edge cases,
+  // but we need createObjectURL to work without "instanceof Blob" checks from Node/JSDOM.
+  class MockURL extends NativeURL {
+    constructor(url, base) {
+      super(url, base);
+    }
+    static createObjectURL(blob) {
+      return 'http://mock-url';
+    }
+    static revokeObjectURL(url) {
+      // noop
+    }
+  }
+
+  global.window.URL = MockURL;
+  global.URL = MockURL;
+
+  global.Blob = class Blob {
+    constructor(content, options) {
+      this.content = content;
+      this.options = options;
+    }
+  };
 }
 
+console.log('Setup loaded');
 setupDom();
 console.error = function () {};

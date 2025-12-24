@@ -31,7 +31,7 @@ describe('<TablePagination />', function () {
 
 <<<<<<< Updated upstream
     wrapper
-      .find('#pagination-next')
+      .find('button#pagination-next')
       .at(0)
       .simulate('click');
 =======

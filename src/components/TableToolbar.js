@@ -11,7 +11,7 @@ import DownloadIcon from '@mui/icons-material/CloudDownload';
 import PrintIcon from '@mui/icons-material/Print';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import FilterIcon from '@mui/icons-material/FilterList';
-import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
+import { useReactToPrint } from 'react-to-print';
 import find from 'lodash.find';
 import { withStyles } from 'tss-react/mui';
 import { createCSVDownload, downloadCSV } from '../utils';
@@ -103,6 +103,34 @@ export const defaultToolbarStyles = (theme) => ({
 });
 
 const RESPONSIVE_FULL_WIDTH_NAME = 'scrollFullHeightFullWidth';
+
+// Functional component for Print button using react-to-print v3 hook API
+const PrintButton = ({ tableRef, Tooltip, print, options, classes, PrintIconComponent }) => {
+  // Create a stable ref object that we'll keep updated with the tableRef content
+  const contentRef = React.useRef(null);
+
+  // Keep the ref updated on each render
+  React.useEffect(() => {
+    contentRef.current = tableRef();
+  });
+
+  const handlePrint = useReactToPrint({
+    contentRef,
+  });
+
+  return (
+    <Tooltip title={print}>
+      <IconButton
+        data-testid={print + '-iconButton'}
+        aria-label={print}
+        disabled={options.print === 'disabled'}
+        onClick={handlePrint}
+        classes={{ root: classes.icon }}>
+        <PrintIconComponent />
+      </IconButton>
+    </Tooltip>
+  );
+};
 
 class TableToolbar extends React.Component {
   state = {
@@ -379,26 +407,14 @@ class TableToolbar extends React.Component {
             </Tooltip>
           )}
           {!(options.print === false || options.print === 'false') && (
-            <span>
-              <ReactToPrint content={() => this.props.tableRef()}>
-                <PrintContextConsumer>
-                  {({ handlePrint }) => (
-                    <span>
-                      <Tooltip title={print}>
-                        <IconButton
-                          data-testid={print + '-iconButton'}
-                          aria-label={print}
-                          disabled={options.print === 'disabled'}
-                          onClick={handlePrint}
-                          classes={{ root: classes.icon }}>
-                          <PrintIconComponent />
-                        </IconButton>
-                      </Tooltip>
-                    </span>
-                  )}
-                </PrintContextConsumer>
-              </ReactToPrint>
-            </span>
+            <PrintButton
+              tableRef={this.props.tableRef}
+              Tooltip={Tooltip}
+              print={print}
+              options={options}
+              classes={classes}
+              PrintIconComponent={PrintIconComponent}
+            />
           )}
           {!(options.viewColumns === false || options.viewColumns === 'false') && (
             <Popover

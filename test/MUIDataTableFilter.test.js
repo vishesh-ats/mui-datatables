@@ -305,7 +305,7 @@ describe('<TableFilter />', function () {
 
 <<<<<<< Updated upstream
     wrapper
-      .find('[data-testid="filterReset-button"]')
+      .find('button[data-testid="filterReset-button"]')
       .at(0)
       .simulate('click');
 =======

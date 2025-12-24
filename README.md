@@ -4,14 +4,12 @@
 
 # MUI-Datatables - Datatables for MUI (formerly Material-UI)
 
-[![Build Status](https://travis-ci.org/gregnb/mui-datatables.svg?branch=master)](https://travis-ci.org/gregnb/mui-datatables)
-[![NPM Downloads](https://img.shields.io/npm/dt/mui-datatables.svg?style=flat)](https://npmcharts.com/compare/mui-datatables?minimal=true)
-[![Coverage Status](https://coveralls.io/repos/github/gregnb/mui-datatables/badge.svg?branch=master)](https://coveralls.io/github/gregnb/mui-datatables?branch=master)
-[![npm version](https://badge.fury.io/js/mui-datatables.svg)](https://badge.fury.io/js/mui-datatables)
+[![npm version](https://badge.fury.io/js/@vishm-ats%2Fmui-datatables.svg)](https://badge.fury.io/js/@vishm-ats%2Fmui-datatables)
+[![NPM Downloads](https://img.shields.io/npm/dt/@vishm-ats/mui-datatables.svg?style=flat)](https://npmcharts.com/compare/@vishm-ats/mui-datatables?minimal=true)
 
-MUI-Datatables is a responsive datatables component built on [Material-UI](https://www.material-ui.com).  It comes with features like filtering, [resizable columns](https://codesandbox.io/s/muidatatables-custom-toolbar-zomv5?file=/index.js), view/hide columns, [draggable columns](https://codesandbox.io/s/muidatatables-resize-columns-example-tnrkc?file=/index.js), search, export to CSV download, printing, selectable rows, expandable rows, pagination, and sorting. On top of the ability to customize styling on most views, there are three responsive modes "vertical", "standard", and "simple" for mobile/tablet devices.
+MUI-Datatables is a responsive datatables component built on [MUI (Material-UI)](https://mui.com).  It comes with features like filtering, [resizable columns](https://codesandbox.io/s/muidatatables-custom-toolbar-zomv5?file=/index.js), view/hide columns, [draggable columns](https://codesandbox.io/s/muidatatables-resize-columns-example-tnrkc?file=/index.js), search, export to CSV download, printing, selectable rows, expandable rows, pagination, and sorting. On top of the ability to customize styling on most views, there are three responsive modes "vertical", "standard", and "simple" for mobile/tablet devices.
 
-Version 3 has been released! You can read about the [updates here](https://github.com/gregnb/mui-datatables/blob/master/docs/v2_to_v3_guide.md)!
+**Version 5** adds support for MUI v6 and React 18+.
 
 <div align="center">
 	<img src="https://user-images.githubusercontent.com/19170080/38026128-eac9d506-3258-11e8-92a7-b0d06e5faa82.gif" />
@@ -42,19 +40,26 @@ Version 3 has been released! You can read about the [updates here](https://githu
 
 ## Install
 
-`npm install mui-datatables --save`
+`npm install @vishm-ats/mui-datatables --save`
 
-If your project doesn't already use them, you need to install mui v5 and it's icon pack:  
-`npm --save install @mui/material @emotion/react @emotion/styled @mui/icons-material`
+If your project doesn't already use them, you need to install MUI v5/v6 and its required dependencies:  
+`npm install --save @mui/material @emotion/react @emotion/styled @mui/icons-material`
 
 ## Compatibility
 
+| @vishm-ats/mui-datatables | MUI (Material-UI) | React    | Required Dependencies                                              |                                         
+|---------------------------|-------------------|----------|-------------------------------------------------------------------|
+| ^5.0.0                    | ^5.11.0 / ^6.0.0  | >=18.0.0 | `@mui/material`, `@mui/icons-material`, `@emotion/react`          |
+| ^4.0.0                    | ^5.9.3            | >=17.0.0 | `@mui/material`, `@mui/icons-material`                            |
+
+### Legacy Versions (gregnb/mui-datatables)
+
 | mui-datatables | material-ui | Required Dependencies                               |                                         
 |----------------|-------------|-----------------------------------------------------|
-| ^2.0.0         | ^3.0.0      | `@material-ui/core`,`@material-ui/icons`            |
-| ^3.0.0         | ^4.10.0     | `@material-ui/core`,`@material-ui/icons`            |
-| ^3.8.0         | ^4.12.0     | `@material-ui/core`,`@material-ui/icons`            |
-| ^4.0.0         | ^5.9.3      | `@mui/material`,`@mui/icons-material`               |
+| ^2.0.0         | ^3.0.0      | `@material-ui/core`, `@material-ui/icons`           |
+| ^3.0.0         | ^4.10.0     | `@material-ui/core`, `@material-ui/icons`           |
+| ^3.8.0         | ^4.12.0     | `@material-ui/core`, `@material-ui/icons`           |
+| ^4.0.0         | ^5.9.3      | `@mui/material`, `@mui/icons-material`              |
 
 ## Demo
 
@@ -68,7 +73,7 @@ For a simple table:
 
 ```js
 
-import MUIDataTable from "mui-datatables";
+import MUIDataTable from "@vishm-ats/mui-datatables";
 
 const columns = ["Name", "Company", "City", "State"];
 
@@ -97,7 +102,7 @@ Or customize columns:
 ```js
 
 import React from "react"
-import MUIDataTable from "mui-datatables";
+import MUIDataTable from "@vishm-ats/mui-datatables";
 
 const columns = [
  {
@@ -370,7 +375,7 @@ Using Material-UI theme overrides will allow you to customize styling to your li
 
 ```js
 import React from "react";
-import MUIDataTable from "mui-datatables";
+import MUIDataTable from "@vishm-ats/mui-datatables";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 class BodyCellExample extends React.Component {
@@ -406,7 +411,7 @@ You can pass custom components to further customize the table:
 ```js
 import React from "react";
 import Chip from '@mui/material/Chip';
-import MUIDataTable, { TableFilterList } from "mui-datatables";
+import MUIDataTable, { TableFilterList } from "@vishm-ats/mui-datatables";
 
 const CustomChip = ({ label, onDelete }) => {
     return (

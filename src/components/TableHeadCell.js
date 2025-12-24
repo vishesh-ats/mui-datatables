@@ -123,25 +123,19 @@ const TableHeadCell = ({
     ...(ariaSortDirection ? { direction: sortDirection } : {}),
   };
 
-<<<<<<< Updated upstream
-  const [{ opacity }, dragRef, preview] = useDrag({
-    item: {
-      type: 'HEADER',
-      colIndex: index,
-      headCellRefs: draggableHeadCellRefs,
-    },
-    begin: monitor => {
-=======
   const [{ opacity: _opacity }, dragRef] = useDrag({
     type: 'HEADER',
     item: () => {
->>>>>>> Stashed changes
       setTimeout(() => {
         setHintTooltipOpen(false);
         setSortTooltipOpen(false);
         setDragging(true);
       }, 0);
-      return null;
+      return {
+        type: 'HEADER',
+        colIndex: index,
+        headCellRefs: draggableHeadCellRefs,
+      };
     },
     end: (_item, _monitor) => {
       setDragging(false);
