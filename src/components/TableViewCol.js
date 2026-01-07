@@ -7,7 +7,7 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { makeStyles } from 'tss-react/mui';
 
-const useStyles = makeStyles({ name: 'MUIDataTableViewCol' })(theme => ({
+const useStyles = makeStyles({ name: 'MUIDataTableViewCol' })((theme) => ({
   root: {
     padding: '16px 24px 16px 24px',
     fontFamily: 'Roboto',
@@ -38,12 +38,12 @@ const useStyles = makeStyles({ name: 'MUIDataTableViewCol' })(theme => ({
   },
 }));
 
-const TableViewCol = ({ columns, options, components = {}, onColumnUpdate, updateColumns }) => {
+const TableViewCol = ({ columns, options, components = {}, onColumnUpdate, updateColumns: _updateColumns }) => {
   const { classes } = useStyles();
   const textLabels = options.textLabels.viewColumns;
   const CheckboxComponent = components.Checkbox || Checkbox;
 
-  const handleColChange = index => {
+  const handleColChange = (index) => {
     onColumnUpdate(index);
   };
 

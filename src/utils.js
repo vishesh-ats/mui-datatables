@@ -9,7 +9,7 @@ function escapeDangerousCSVCharacters(data) {
   if (typeof data === 'string') {
     // Places single quote before the appearance of dangerous characters if they
     // are the first in the data string.
-    return data.replace(/^\+|^\-|^\=|^\@/g, "'$&");
+    return data.replace(/^\+|^-|^=|^@/g, "'$&");
   }
 
   return data;
@@ -37,7 +37,7 @@ function getPageValue(count, rowsPerPage, page) {
 }
 
 function getCollatorComparator() {
-  if (!!Intl) {
+  if (Intl) {
     const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
     return collator.compare;
   }
@@ -58,10 +58,10 @@ function sortCompare(order) {
 }
 
 function buildCSV(columns, data, options) {
-  const replaceDoubleQuoteInString = columnData =>
-    typeof columnData === 'string' ? columnData.replace(/\"/g, '""') : columnData;
+  const replaceDoubleQuoteInString = (columnData) =>
+    typeof columnData === 'string' ? columnData.replace(/"/g, '""') : columnData;
 
-  const buildHead = columns => {
+  const buildHead = (columns) => {
     return (
       columns
         .reduce(
@@ -80,7 +80,7 @@ function buildCSV(columns, data, options) {
   };
   const CSVHead = buildHead(columns);
 
-  const buildBody = data => {
+  const buildBody = (data) => {
     if (!data.length) return '';
     return data
       .reduce(
@@ -89,7 +89,7 @@ function buildCSV(columns, data, options) {
           '"' +
           row.data
             .filter((_, index) => columns[index].download)
-            .map(columnData => escapeDangerousCSVCharacters(replaceDoubleQuoteInString(columnData)))
+            .map((columnData) => escapeDangerousCSVCharacters(replaceDoubleQuoteInString(columnData)))
             .join('"' + options.downloadOptions.separator + '"') +
           '"\r\n',
         '',

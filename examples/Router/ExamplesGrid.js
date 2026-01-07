@@ -69,7 +69,7 @@ class ExamplesGrid extends React.Component {
 
         <Grid container className={classes.container} spacing={1}>
           {examplesSortedKeys.map((label, index) => (
-            <Grid key={index} item md={2}>
+            <Grid key={index} size={{ xs: 12, sm: 6, md: 2 }}>
               <Link className={classes.link} to={`/${label.replace(/\s+/g, '-').toLowerCase()}`}>
                 <Card className={classes.card}>
                   <CardContent className={classes.cardContent}>

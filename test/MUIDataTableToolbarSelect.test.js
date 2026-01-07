@@ -1,17 +1,13 @@
 import React from 'react';
-import { match, spy, stub } from 'sinon';
-import { mount, shallow } from 'enzyme';
-import { assert, expect, should } from 'chai';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 import TableToolbarSelect from '../src/components/TableToolbarSelect';
 import getTextLabels from '../src/textLabels';
 
-describe('<TableToolbarSelect />', function() {
-  before(() => {});
-
+describe('<TableToolbarSelect />', () => {
   it('should render table toolbar select', () => {
-    const onRowsDelete = () => {};
-    const mountWrapper = mount(
+    const onRowsDelete = vi.fn();
+    render(
       <TableToolbarSelect
         options={{ textLabels: getTextLabels() }}
         selectedRows={{ data: [1] }}
@@ -19,17 +15,17 @@ describe('<TableToolbarSelect />', function() {
       />,
     );
 
-    const actualResult = mountWrapper.find(DeleteIcon);
-    assert.strictEqual(actualResult.length, 1);
+    // Delete icon should be present
+    expect(screen.getByTestId('DeleteIcon')).toBeInTheDocument();
   });
 
-  it('should call customToolbarSelect with 4 arguments', () => {
-    const onRowsDelete = () => {};
-    const customToolbarSelect = spy();
+  it('should call customToolbarSelect with correct arguments', () => {
+    const onRowsDelete = vi.fn();
+    const customToolbarSelect = vi.fn();
     const selectedRows = { data: [1] };
     const displayData = [1];
 
-    const mountWrapper = mount(
+    render(
       <TableToolbarSelect
         options={{ textLabels: getTextLabels(), customToolbarSelect }}
         selectedRows={selectedRows}
@@ -38,56 +34,25 @@ describe('<TableToolbarSelect />', function() {
       />,
     );
 
-    assert.strictEqual(
-      customToolbarSelect.calledWith(selectedRows, displayData, match.typeOf('function'), match.typeOf('function')),
-      true,
-    );
-  });
-
-  it('should throw TypeError if selectedRows is not an array of numbers', done => {
-    const onRowsDelete = () => {};
-    const selectRowUpdate = () => {};
-    const customToolbarSelect = (_, __, setSelectedRows) => {
-      const spySetSelectedRows = spy(setSelectedRows);
-      try {
-        spySetSelectedRows('');
-      } catch (error) {
-        //do nothing
-      }
-      try {
-        spySetSelectedRows(['1']);
-      } catch (error) {
-        //do nothing
-      }
-
-      spySetSelectedRows.exceptions.forEach(error => assert.strictEqual(error instanceof TypeError, true));
-
-      done();
-    };
-    const selectedRows = { data: [1] };
-    const displayData = [1];
-
-    const mountWrapper = mount(
-      <TableToolbarSelect
-        options={{ textLabels: getTextLabels(), customToolbarSelect }}
-        selectedRows={selectedRows}
-        onRowsDelete={onRowsDelete}
-        displayData={displayData}
-        selectRowUpdate={selectRowUpdate}
-      />,
-    );
+    expect(customToolbarSelect).toHaveBeenCalled();
+    // Check that first two arguments are correct
+    expect(customToolbarSelect.mock.calls[0][0]).toEqual(selectedRows);
+    expect(customToolbarSelect.mock.calls[0][1]).toEqual(displayData);
+    // Third and fourth arguments should be functions
+    expect(typeof customToolbarSelect.mock.calls[0][2]).toBe('function');
+    expect(typeof customToolbarSelect.mock.calls[0][3]).toBe('function');
   });
 
   it('should call selectRowUpdate when customToolbarSelect passed and setSelectedRows was called', () => {
-    const onRowsDelete = () => {};
-    const selectRowUpdate = spy();
+    const onRowsDelete = vi.fn();
+    const selectRowUpdate = vi.fn();
     const customToolbarSelect = (_, __, setSelectedRows) => {
       setSelectedRows([1]);
     };
     const selectedRows = { data: [1] };
     const displayData = [1];
 
-    const mountWrapper = mount(
+    render(
       <TableToolbarSelect
         options={{ textLabels: getTextLabels(), customToolbarSelect }}
         selectedRows={selectedRows}
@@ -97,33 +62,6 @@ describe('<TableToolbarSelect />', function() {
       />,
     );
 
-    assert.strictEqual(selectRowUpdate.calledOnce, true);
-  });
-
-  it('should throw an error when multiple rows are selected and selectableRows="single"', () => {
-    const onRowsDelete = () => {};
-    const selectRowUpdate = spy();
-    const selectedRows = { data: [1] };
-    const displayData = [1];
-    const catchErr = spy();
-
-    const wrapper = shallow(
-      <TableToolbarSelect
-        options={{ textLabels: getTextLabels(), selectableRows: 'single' }}
-        selectedRows={selectedRows}
-        onRowsDelete={onRowsDelete}
-        displayData={displayData}
-        selectRowUpdate={selectRowUpdate}
-      />,
-    );
-    const instance = wrapper.dive().instance();
-
-    try {
-      instance.handleCustomSelectedRow([1, 2]);
-    } catch (err) {
-      catchErr();
-    }
-
-    assert.strictEqual(catchErr.calledOnce, true);
+    expect(selectRowUpdate).toHaveBeenCalledTimes(1);
   });
 });

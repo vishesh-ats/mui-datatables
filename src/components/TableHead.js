@@ -6,7 +6,7 @@ import TableHeadCell from './TableHeadCell';
 import TableHeadRow from './TableHeadRow';
 import TableSelectCell from './TableSelectCell';
 
-const useStyles = makeStyles({ name: 'MUIDataTableHead' })(theme => ({
+const useStyles = makeStyles({ name: 'MUIDataTableHead' })((theme) => ({
   main: {},
   responsiveStacked: {
     [theme.breakpoints.down('md')]: {
@@ -51,7 +51,7 @@ const TableHead = ({
 
   const [dragging, setDragging] = useState(false);
 
-  const handleToggleColumn = index => {
+  const handleToggleColumn = (index) => {
     toggleSort(index);
   };
 
@@ -104,7 +104,8 @@ const TableHead = ({
         [classes.responsiveStackedAlways]: options.responsive === 'verticalAlways',
         [classes.responsiveSimple]: options.responsive === 'simple',
         [classes.main]: true,
-      })}>
+      })}
+    >
       <TableHeadRow>
         <TableSelectCell
           setHeadCellRef={setCellRef}
@@ -128,7 +129,9 @@ const TableHead = ({
           ({ column, index, colPos }) =>
             column.display === 'true' &&
             (column.customHeadRender ? (
-              column.customHeadRender({ index, ...column }, handleToggleColumn, sortOrder)
+              <React.Fragment key={index}>
+                {column.customHeadRender({ index, ...column }, handleToggleColumn, sortOrder)}
+              </React.Fragment>
             ) : (
               <TableHeadCell
                 cellHeaderProps={
@@ -154,7 +157,8 @@ const TableHead = ({
                 draggableHeadCellRefs={draggableHeadCellRefs}
                 tableRef={tableRef}
                 tableId={tableId}
-                components={components}>
+                components={components}
+              >
                 {column.customHeadLabelRender
                   ? column.customHeadLabelRender({ index, colPos, ...column })
                   : column.label}

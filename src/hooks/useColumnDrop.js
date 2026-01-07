@@ -11,7 +11,7 @@ const getColModel = (headCellRefs, columnOrder, columns) => {
   if (leftMostCell === null) {
     leftMostCell = { offsetLeft: Infinity };
     let headCells = Object.entries(headCellRefs);
-    headCells.forEach(([key, item], idx) => {
+    headCells.forEach(([_key, item], _idx) => {
       if (item && item.offsetLeft < leftMostCell.offsetLeft) {
         leftMostCell = item;
       }
@@ -42,7 +42,7 @@ const getColModel = (headCellRefs, columnOrder, columns) => {
     };
   }
 
-  columnOrder.forEach((colIdx, idx) => {
+  columnOrder.forEach((colIdx, _idx) => {
     let col = headCellRefs[colIdx + 1];
     let cmIndx = colModel.length - 1;
     if (!(columns[colIdx] && columns[colIdx].display !== 'true')) {
@@ -73,9 +73,8 @@ const reorderColumns = (prevColumnOrder, columnIndex, newPosition) => {
   return columnOrder;
 };
 
-const handleHover = opts => {
+const handleHover = (opts) => {
   const {
-    item,
     mon,
     index,
     headCellRefs,
@@ -111,10 +110,10 @@ const handleHover = opts => {
       let curColModel = getColModel(headCellRefs, columnOrder, columns);
 
       let transitions = [];
-      newColModel.forEach(item => {
+      newColModel.forEach((item) => {
         transitions[item.columnIndex] = item.left;
       });
-      curColModel.forEach(item => {
+      curColModel.forEach((item) => {
         transitions[item.columnIndex] = transitions[item.columnIndex] - item.left;
       });
 
@@ -152,11 +151,11 @@ const handleHover = opts => {
 
       let newColIndex = mon.getItem().colIndex;
       timers.columnShift = setTimeout(() => {
-        allElms.forEach(item => {
+        allElms.forEach((item) => {
           item.style.transition = '0s';
           item.style.transform = 'translateX(0)';
         });
-        dividers.forEach(item => {
+        dividers.forEach((item) => {
           item.style.transition = '0s';
           item.style.transform = 'translateX(0)';
         });
@@ -166,12 +165,12 @@ const handleHover = opts => {
   }
 };
 
-const useColumnDrop = opts => {
-  const [{ isOver, canDrop }, drop] = useDrop({
+const useColumnDrop = (opts) => {
+  const [, drop] = useDrop({
     accept: 'HEADER',
     drop: opts.drop,
     hover: (item, mon) => handleHover(Object.assign({}, opts, { item, mon })),
-    collect: mon => ({
+    collect: (mon) => ({
       isOver: !!mon.isOver(),
       canDrop: !!mon.canDrop(),
     }),
